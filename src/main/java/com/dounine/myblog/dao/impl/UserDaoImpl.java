@@ -27,13 +27,13 @@ public class UserDaoImpl implements UserDao {
     @Override
     public User findById(int id) {
         String sql = "select * from user where id = ?";
-        return jdbcTemplate.queryForObject(sql, User.class, id);
+        return (User) jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper(User.class), id);
     }
 
     @Override
     public User findByName(String userName) {
         String sql = "select * from user where name = ?";
-        return jdbcTemplate.queryForObject(sql, User.class, userName);
+        return (User) jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper(User.class), userName);
     }
 
     @Override

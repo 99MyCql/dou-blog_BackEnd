@@ -26,13 +26,13 @@ public class ArticleDaoImpl implements ArticleDao {
     @Override
     public Article findById(int id) {
         String sql = "select * from article where id = ?";
-        return jdbcTemplate.queryForObject(sql, Article.class, id);
+        return (Article) jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper(Article.class), id);
     }
 
     @Override
-    public Article findByArticleId(int ArticleId) {
+    public Article findByArticleId(int articleId) {
         String sql = "select * from article where articleId = ?";
-        return jdbcTemplate.queryForObject(sql, Article.class, ArticleId);
+        return (Article) jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper(Article.class), articleId);
     }
 
     @Override

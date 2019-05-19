@@ -26,7 +26,7 @@ public class CommentDaoImpl implements CommentDao {
     @Override
     public Comment findById(int id) {
         String sql = "select * from comment where id = ?";
-        return jdbcTemplate.queryForObject(sql, Comment.class, id);
+        return (Comment) jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper(Comment.class), id);
     }
 
     @Override

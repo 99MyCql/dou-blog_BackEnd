@@ -32,8 +32,8 @@ public class UserController {
     }
 
     @RequestMapping(value = "/findByName", method = RequestMethod.GET)
-    public String findByName(@RequestParam int name) {
-        User user = userDao.findById(name);
+    public String findByName(@RequestParam String name) {
+        User user = userDao.findByName(name);
         return JSONObject.toJSONString(user);
     }
 
@@ -62,7 +62,7 @@ public class UserController {
         }
         else {
             retMsg.put("code", 0);
-            retMsg.put("msg", "insert error");
+            retMsg.put("msg", "delete error");
             return retMsg;
         }
     }
@@ -77,7 +77,7 @@ public class UserController {
         }
         else {
             retMsg.put("code", 0);
-            retMsg.put("msg", "insert error");
+            retMsg.put("msg", "update error");
             return retMsg;
         }
     }
