@@ -3,6 +3,7 @@ package com.dounine.myblog.dao.impl;
 import com.dounine.myblog.bean.User;
 import com.dounine.myblog.dao.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -27,13 +28,25 @@ public class UserDaoImpl implements UserDao {
     @Override
     public User findById(int id) {
         String sql = "select * from user where id = ?";
-        return (User) jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper(User.class), id);
+        try {
+            User user = (User) jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper(User.class), id);
+            return user;
+        } catch (IncorrectResultSizeDataAccessException e) {
+            System.out.println(e);
+            return null;
+        }
     }
 
     @Override
     public User findByName(String userName) {
         String sql = "select * from user where name = ?";
-        return (User) jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper(User.class), userName);
+        try {
+            User user = (User) jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper(User.class), userName);
+            return user;
+        } catch (IncorrectResultSizeDataAccessException e) {
+            System.out.println(e);
+            return null;
+        }
     }
 
     @Override

@@ -17,7 +17,7 @@ public class CommentController {
     CommentDao commentDao;
 
     @RequestMapping(value = "/listAll", method = RequestMethod.GET)
-    public String findById(@RequestParam(defaultValue = "1") int page,
+    public String listAll(@RequestParam(defaultValue = "1") int page,
                            @RequestParam(defaultValue = "10") int size) {
         List<Comment> commentList = commentDao.listAllComments();
         PageHelper.startPage(page, size);
@@ -32,7 +32,7 @@ public class CommentController {
     }
 
     @RequestMapping(value = "/insert", method = RequestMethod.POST)
-    public JSONObject add(@RequestBody Comment comment) {
+    public JSONObject insert(@RequestBody Comment comment) {
         JSONObject retMsg = new JSONObject();
         if (commentDao.insert(comment) > 0) {
             retMsg.put("code", 1);

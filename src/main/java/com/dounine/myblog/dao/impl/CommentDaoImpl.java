@@ -3,6 +3,7 @@ package com.dounine.myblog.dao.impl;
 import com.dounine.myblog.bean.Comment;
 import com.dounine.myblog.dao.CommentDao;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -26,7 +27,12 @@ public class CommentDaoImpl implements CommentDao {
     @Override
     public Comment findById(int id) {
         String sql = "select * from comment where id = ?";
-        return (Comment) jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper(Comment.class), id);
+        try {
+            return (Comment) jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper(Comment.class), id);
+        } catch (IncorrectResultSizeDataAccessException e) {
+            System.out.println(e);
+            return null;
+        }
     }
 
     @Override

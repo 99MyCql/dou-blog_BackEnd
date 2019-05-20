@@ -18,7 +18,7 @@ public class ArticleController {
     ArticleDao articleDao;
 
     @RequestMapping(value = "/listAll", method = RequestMethod.GET)
-    public String findById(@RequestParam(defaultValue = "1") int page,
+    public String listAll(@RequestParam(defaultValue = "1") int page,
                            @RequestParam(defaultValue = "10") int size) {
         List<Article> articleList = articleDao.listAllArticles();
         PageHelper.startPage(page, size);
@@ -39,7 +39,7 @@ public class ArticleController {
     }
 
     @RequestMapping(value = "/insert", method = RequestMethod.POST)
-    public JSONObject add(@RequestBody Article article) {
+    public JSONObject insert(@RequestBody Article article) {
         JSONObject retMsg = new JSONObject();
         if (articleDao.insert(article) > 0) {
             retMsg.put("code", 1);

@@ -22,9 +22,9 @@ public class Article {
 
     private String articleTabloid;      // 文章摘要
 
-    private int likes = 0;      // 文章喜欢人数
+    private int likes;      // 文章喜欢人数
 
-    private int reads = 0;      // 文章阅读数
+    private int readers;      // 文章阅读数
 
     private long lastArticleId; // 上一篇文章id
 
@@ -34,7 +34,7 @@ public class Article {
 
     public Article(long articleId, int authorId, String articleTitle, String publishDate,
                    String updateDate, String articleContent, String articleTags, String articleCategories,
-                   String articleTabloid, long lastArticleId, long nextArticleId) {
+                   String articleTabloid, long lastArticleId, long nextArticleId,int readers,int likes) {
         this.articleId = articleId;
         this.authorId = authorId;
         this.publishDate = publishDate;
@@ -44,6 +44,8 @@ public class Article {
         this.articleCategories = articleCategories;
         this.articleTabloid = articleTabloid;
         this.lastArticleId = lastArticleId;
+        this.readers=readers;
+        this.likes=likes;
         this.nextArticleId = nextArticleId;
     }
 
@@ -95,8 +97,8 @@ public class Article {
         this.nextArticleId = nextArticleId;
     }
 
-    public void setReads(int reads) {
-        this.reads = reads;
+    public void setReaders(int readers) {
+        this.readers = readers;
     }
 
     public void setUpdateDate(String updateDate) {
@@ -124,8 +126,8 @@ public class Article {
         return articleCategories;
     }
 
-    public int getReads() {
-        return reads;
+    public int getReaders() {
+        return readers;
     }
 
     public String getArticleContent() {
