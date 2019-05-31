@@ -4,8 +4,6 @@ public class Article {
 
     private int id; // 主键
 
-    private long articleId;     // 文章编号
-
     private int authorId;    // 作者编号
 
     private String articleTitle;    // 文章标题
@@ -32,10 +30,9 @@ public class Article {
 
     public Article() {}
 
-    public Article(long articleId, int authorId, String articleTitle, String publishDate,
+    public Article(int authorId, String articleTitle, String publishDate,
                    String updateDate, String articleContent, String articleTags, String articleCategories,
                    String articleTabloid, long lastArticleId, long nextArticleId,int readers,int likes) {
-        this.articleId = articleId;
         this.authorId = authorId;
         this.publishDate = publishDate;
         this.updateDate = updateDate;
@@ -51,10 +48,6 @@ public class Article {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public void setArticleId(long articleId) {
-        this.articleId = articleId;
     }
 
     public void setArticleContent(String articleContent) {
@@ -116,10 +109,6 @@ public class Article {
 
     public int getLikes() {
         return likes;
-    }
-
-    public long getArticleId() {
-        return articleId;
     }
 
     public String getArticleCategories() {

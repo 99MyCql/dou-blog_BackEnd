@@ -12,9 +12,9 @@ import java.util.List;
 
 @Repository
 public class ArticleDaoImpl implements ArticleDao {
-    @Autowired
     private final JdbcTemplate jdbcTemplate;
 
+    @Autowired
     public ArticleDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
@@ -36,10 +36,10 @@ public class ArticleDaoImpl implements ArticleDao {
     }
 
     @Override
-    public Article findByArticleId(int articleId) {
-        String sql = "select * from article where articleId = ?";
+    public Article findByArticleTitle(String articleTitle) {
+        String sql = "select * from article where articleTitle = ?";
         try {
-            return (Article) jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper(Article.class), articleId);
+            return (Article) jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper(Article.class), articleTitle);
         } catch (IncorrectResultSizeDataAccessException e) {
             System.out.println(e);
             return null;
@@ -48,12 +48,12 @@ public class ArticleDaoImpl implements ArticleDao {
 
     @Override
     public int insert(Article article) {
-        String sql = "insert into article(authorId, articleId," +
+        String sql = "insert into article(authorId," +
                 "articleTitle, articleContent, articleTags," +
                 "articleCategories,publishDate, updateDate, " +
-                "articleTabloid, likes, readers) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                "articleTabloid, likes, readers) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         return jdbcTemplate.update(sql,
-                article.getAuthorId(), article.getArticleId(),
+                article.getAuthorId(),
                 article.getArticleTitle(),article.getArticleContent(), article.getArticleTags(),
                 article.getArticleCategories(),article.getPublishDate(), article.getUpdateDate(),
                 article.getArticleTabloid(), article.getLikes(), article.getReaders());
@@ -67,12 +67,13 @@ public class ArticleDaoImpl implements ArticleDao {
 
     @Override
     public int update(Article newArticle) {
-        String sql = "update article set (authorId, articleId, " +
-                "articleTitle, articleContent, articleTags, articleCategories, " +
-                "publishDate, updateDate, articleTabloid, likes, readers) " +
-                "values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) where id = ?";
+        String sql = "update article set authorId = ?, " +
+                "articleTitle = ?, articleContent = ?, articleTags = ?, " +
+                "articleCategories = ?, publishDate = ?, updateDate = ?, " +
+                "articleTabloid = ?, likes = ?, readers = ? " +
+                "where id = ?";
         return jdbcTemplate.update(sql,
-                newArticle.getAuthorId(), newArticle.getArticleId(), newArticle.getArticleTitle(),
+                newArticle.getAuthorId(), newArticle.getArticleTitle(),
                 newArticle.getArticleContent(), newArticle.getArticleTags(), newArticle.getArticleCategories(),
                 newArticle.getPublishDate(), newArticle.getUpdateDate(), newArticle.getArticleTabloid(),
                 newArticle.getLikes(), newArticle.getReaders(), newArticle.getId());

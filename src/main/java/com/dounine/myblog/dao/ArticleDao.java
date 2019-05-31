@@ -9,7 +9,7 @@ public interface ArticleDao {
 
     public Article findById(int id);
 
-    public Article findByArticleId(int ArticleId);
+    public Article findByArticleTitle(String ArticleTitle);
 
     public int insert(Article article);
 

@@ -58,20 +58,20 @@ public class UserController {
         }
     }
 
-    @RequestMapping(value = "/insert", method = RequestMethod.POST)
-    public JSONObject insert(@RequestBody User user) {
-        JSONObject retMsg = new JSONObject();
-        if (userDao.insert(user) > 0) {
-            retMsg.put("code", 1);
-            retMsg.put("msg", "success");
-            return retMsg;
-        }
-        else {
-            retMsg.put("code", 0);
-            retMsg.put("msg", "insert error");
-            return retMsg;
-        }
-    }
+//    @RequestMapping(value = "/insert", method = RequestMethod.POST)
+//    public JSONObject insert(@RequestBody User user) {
+//        JSONObject retMsg = new JSONObject();
+//        if (userDao.insert(user) > 0) {
+//            retMsg.put("code", 1);
+//            retMsg.put("msg", "success");
+//            return retMsg;
+//        }
+//        else {
+//            retMsg.put("code", 0);
+//            retMsg.put("msg", "insert error");
+//            return retMsg;
+//        }
+//    }
 
     @RequestMapping(value = "/delete", method = RequestMethod.GET)
     public JSONObject delete(@RequestParam int id) {
@@ -117,18 +117,15 @@ public class UserController {
             if (user.getPassword().equals(passwd)) {
                 retMsg.put("code", 1);
                 retMsg.put("msg", "login success");
-                retMsg.put("token", "hello");
             }
             else {
                 retMsg.put("code", 0);
                 retMsg.put("msg", "password error");
-                retMsg.put("token", "hello");
             }
         }
         else {
             retMsg.put("code", 0);
             retMsg.put("msg", "no this user");
-            retMsg.put("token", "hello");
         }
         return retMsg;
     }
@@ -136,14 +133,21 @@ public class UserController {
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public JSONObject register(@RequestBody User user) {
         JSONObject retMsg = new JSONObject();
-        if (userDao.insert(user) > 0) {
-            retMsg.put("code", 1);
-            retMsg.put("msg", "register success");
+        if (userDao.findByName(user.getName()) == null) {
+            if (userDao.insert(user) > 0) {
+                retMsg.put("code", 1);
+                retMsg.put("msg", "register success");
+            }
+            else {
+                retMsg.put("code", 0);
+                retMsg.put("msg", "register error");
+            }
+            return retMsg;
         }
         else {
             retMsg.put("code", 0);
-            retMsg.put("msg", "register error");
+            retMsg.put("msg", "this username is exist");
+            return retMsg;
         }
-        return retMsg;
     }
 }
