@@ -16,15 +16,21 @@ public class User {
 
     private String email;
 
+    private String qq;
+
+    private String birthday;
+
     public User() {}
 
-    public User(String phone, String name, String password, int gender, String personalBrief, String email) {
+    public User(String phone, String name, String password, int gender, String personalBrief, String email, String qq, String birthday) {
         this.phone = phone;
         this.name = name;
         this.password = password;
         this.gender = gender;
         this.personalBrief = personalBrief;
         this.email = email;
+        this.qq = qq;
+        this.birthday = birthday;
     }
 
     public void setId(int id) {
@@ -81,5 +87,21 @@ public class User {
 
     public String getPersonalBrief() {
         return personalBrief;
+    }
+
+    public void setQq(String qq) {
+        this.qq = qq;
+    }
+
+    public String getQq() {
+        return qq;
+    }
+
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
+    }
+
+    public String getBirthday() {
+        return birthday;
     }
 }

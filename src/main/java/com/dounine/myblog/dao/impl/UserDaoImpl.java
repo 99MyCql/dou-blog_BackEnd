@@ -51,11 +51,11 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public int insert(User user) {
-        String sql = "insert into user(name, phone, password, gender, personalBrief, email) " +
-                "values(?, ?, ?, ?, ?, ?)";
+        String sql = "insert into user(name, phone, password, gender, personalBrief, email, qq, birthday) " +
+                "values(?, ?, ?, ?, ?, ?, ?, ?)";
         return jdbcTemplate.update(sql,
-                user.getName(), user.getPhone(), user.getPassword(),
-                user.getGender(), user.getPersonalBrief(), user.getEmail());
+                user.getName(), user.getPhone(), user.getPassword(), user.getGender(),
+                user.getPersonalBrief(), user.getEmail(), user.getQq(), user.getBirthday());
     }
 
     @Override
@@ -66,8 +66,9 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public int update(User newUser) {
-        String sql = "update user set name=?, phone=?, password=?, gender=?, personalBrief=?, email=? where id=?";
-        return jdbcTemplate.update(sql, newUser.getName(), newUser.getPhone(), newUser.getPassword(),
-                newUser.getGender(), newUser.getPersonalBrief(), newUser.getEmail(), newUser.getId());
+        String sql = "update user set name=?, phone=?, password=?, gender=?, personalBrief=?, email=?, qq=?, birthday=? where id=?";
+        return jdbcTemplate.update(sql, newUser.getName(), newUser.getPhone(), newUser.getPassword(), newUser.getGender(),
+                newUser.getPersonalBrief(), newUser.getEmail(), newUser.getQq(), newUser.getBirthday(),
+                newUser.getId());
     }
 }
