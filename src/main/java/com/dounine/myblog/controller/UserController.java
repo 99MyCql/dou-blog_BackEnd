@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @RestController
@@ -32,14 +34,14 @@ public class UserController {
         JSONObject retMsg = new JSONObject();
         if (user != null) {
             retMsg.put("code", 1);
-            retMsg.put("msg", JSONObject.toJSONString(user));
-            return retMsg;
+            retMsg.put("msg", "find this user successfully");
+            retMsg.put("data", JSONObject.toJSONString(user));
         }
         else {
             retMsg.put("code", 0);
             retMsg.put("msg", "no this user");
-            return retMsg;
         }
+        return retMsg;
     }
 
     @RequestMapping(value = "/findByName", method = RequestMethod.GET)
@@ -48,14 +50,14 @@ public class UserController {
         JSONObject retMsg = new JSONObject();
         if (user != null) {
             retMsg.put("code", 1);
-            retMsg.put("msg", JSONObject.toJSONString(user));
-            return retMsg;
+            retMsg.put("msg", "find this user successfully");
+            retMsg.put("data", JSONObject.toJSONString(user));
         }
         else {
             retMsg.put("code", 0);
             retMsg.put("msg", "no this user");
-            return retMsg;
         }
+        return retMsg;
     }
 
 //    @RequestMapping(value = "/insert", method = RequestMethod.POST)
@@ -79,13 +81,12 @@ public class UserController {
         if (userDao.delete(id) > 0) {
             retMsg.put("code", 1);
             retMsg.put("msg", "success");
-            return retMsg;
         }
         else {
             retMsg.put("code", 0);
             retMsg.put("msg", "delete error");
-            return retMsg;
         }
+        return retMsg;
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
@@ -94,17 +95,16 @@ public class UserController {
         if (userDao.update(user) > 0) {
             retMsg.put("code", 1);
             retMsg.put("msg", "success");
-            return retMsg;
         }
         else {
             retMsg.put("code", 0);
             retMsg.put("msg", "update error");
-            return retMsg;
         }
+        return retMsg;
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public JSONObject login(@RequestParam String name, @RequestParam String passwd) {
+    public JSONObject login(@RequestParam String name, @RequestParam String password, HttpServletRequest request) {
         User user;
         try {
             user = userDao.findByName(name);
@@ -114,9 +114,12 @@ public class UserController {
         }
         JSONObject retMsg = new JSONObject();
         if (user != null) {
-            if (user.getPassword().equals(passwd)) {
+            if (user.getPassword().equals(password)) {
                 retMsg.put("code", 1);
                 retMsg.put("msg", "login success");
+                HttpSession session = request.getSession();
+                session.setAttribute("username", name);
+                session.setAttribute("role", user.getRole());
             }
             else {
                 retMsg.put("code", 0);
@@ -142,12 +145,11 @@ public class UserController {
                 retMsg.put("code", 0);
                 retMsg.put("msg", "register error");
             }
-            return retMsg;
         }
         else {
             retMsg.put("code", 0);
             retMsg.put("msg", "this username is exist");
-            return retMsg;
         }
+        return retMsg;
     }
 }

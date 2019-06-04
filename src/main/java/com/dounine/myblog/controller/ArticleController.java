@@ -26,14 +26,24 @@ public class ArticleController {
         List<Article> articleList = articleDao.listAllArticles();
         PageHelper.startPage(page, size);
         PageInfo<Article> pageInfo = new PageInfo<>(articleList);
-        System.out.println(JSONObject.toJSONString(pageInfo));
+        // System.out.println(JSONObject.toJSONString(pageInfo));
         return JSONObject.toJSONString(pageInfo);
     }
 
     @RequestMapping(value = "/findById", method = RequestMethod.GET)
-    public String findById(@RequestParam int id) {
+    public JSONObject findById(@RequestParam int id) {
         Article article = articleDao.findById(id);
-        return JSONObject.toJSONString(article);
+        JSONObject retMsg = new JSONObject();
+        if (article == null) {
+            retMsg.put("code", 0);
+            retMsg.put("msg", "find this article fail");
+        }
+        else {
+            retMsg.put("code", 1);
+            retMsg.put("msg", "success");
+            retMsg.put("data", JSONObject.toJSONString(article));
+        }
+        return retMsg;
     }
 
     @RequestMapping(value = "/findByArticleTitle", method = RequestMethod.GET)

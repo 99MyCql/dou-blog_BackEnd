@@ -20,9 +20,12 @@ public class User {
 
     private String birthday;
 
+    private String role;
+
     public User() {}
 
-    public User(String phone, String name, String password, int gender, String personalBrief, String email, String qq, String birthday) {
+    public User(String phone, String name, String password, int gender,
+                String personalBrief, String email, String qq, String birthday, String role) {
         this.phone = phone;
         this.name = name;
         this.password = password;
@@ -31,6 +34,7 @@ public class User {
         this.email = email;
         this.qq = qq;
         this.birthday = birthday;
+        this.role = role;
     }
 
     public void setId(int id) {
@@ -103,5 +107,13 @@ public class User {
 
     public String getBirthday() {
         return birthday;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public String getRole() {
+        return role;
     }
 }
