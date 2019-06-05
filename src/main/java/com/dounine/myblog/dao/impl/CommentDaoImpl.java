@@ -25,6 +25,11 @@ public class CommentDaoImpl implements CommentDao {
     }
 
     @Override
+    public List<Comment> listByArticleId(int articleId) {
+        return jdbcTemplate.query("select * from comment where articleId = ?", new BeanPropertyRowMapper(Comment.class), articleId);
+    }
+
+    @Override
     public Comment findById(int id) {
         String sql = "select * from comment where id = ?";
         try {
@@ -37,7 +42,7 @@ public class CommentDaoImpl implements CommentDao {
 
     @Override
     public int insert(Comment comment) {
-        String sql = "insert into comment(parent_id, articleId, commenterId, commentDate, commentContent, likes) " +
+        String sql = "insert into comment(parentId, articleId, commenterId, commentDate, commentContent, likes) " +
                 "values(?, ?, ?, ?, ?, ?)";
         return jdbcTemplate.update(sql,
                 comment.getParent_id(), comment.getArticleId(), comment.getCommenterId(),
@@ -52,7 +57,7 @@ public class CommentDaoImpl implements CommentDao {
 
     @Override
     public int update(Comment newComment) {
-        String sql = "update comment set (parent_id, articleId, commenterId, commentDate, commentContent, likes) " +
+        String sql = "update comment set (parentId, articleId, commenterId, commentDate, commentContent, likes) " +
                 "values(?, ?, ?, ?, ?, ?) where id = ?";
         return jdbcTemplate.update(sql,
                 newComment.getParent_id(), newComment.getArticleId(), newComment.getCommenterId(),

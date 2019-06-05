@@ -152,4 +152,20 @@ public class UserController {
         }
         return retMsg;
     }
+
+//    @RequestMapping(value = "/getRole", method = RequestMethod.GET)
+//    public JSONObject getRole(@RequestParam String name) {
+//        User user = userDao.findByName(name);
+//        JSONObject retMsg = new JSONObject();
+//        if (user != null) {
+//            retMsg.put("code", 1);
+//            retMsg.put("msg", "find this user successfully");
+//            retMsg.put("data", user.getRole());
+//        }
+//        else {
+//            retMsg.put("code", 0);
+//            retMsg.put("msg", "no this user");
+//        }
+//        return retMsg;
+//    }
 }

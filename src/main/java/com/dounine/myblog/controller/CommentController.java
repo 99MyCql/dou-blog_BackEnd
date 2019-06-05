@@ -8,6 +8,8 @@ import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -15,6 +17,7 @@ import java.util.List;
 public class CommentController {
     @Autowired
     CommentDao commentDao;
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
 
     @RequestMapping(value = "/listAll", method = RequestMethod.GET)
     public String listAll(@RequestParam(defaultValue = "1") int page,
@@ -25,18 +28,45 @@ public class CommentController {
         return JSONObject.toJSONString(pageInfo);
     }
 
+    @RequestMapping(value = "/listByArticleId", method = RequestMethod.GET)
+    public JSONObject listByArticleId(@RequestParam int articleId) {
+        List<Comment> commentList = commentDao.listByArticleId(articleId);
+        JSONObject retMsg = new JSONObject();
+        if (commentList == null) {
+            retMsg.put("code", 0);
+            retMsg.put("msg", "no comment");
+        }
+        else {
+            retMsg.put("code", 1);
+            retMsg.put("msg", "successful");
+            retMsg.put("data", JSONObject.toJSONString(commentList));
+        }
+        return retMsg;
+    }
+
     @RequestMapping(value = "/findById", method = RequestMethod.GET)
-    public String findById(@RequestParam int id) {
+    public JSONObject findById(@RequestParam int id) {
         Comment comment = commentDao.findById(id);
-        return JSONObject.toJSONString(comment);
+        JSONObject retMsg = new JSONObject();
+        if (comment == null) {
+            retMsg.put("code", 0);
+            retMsg.put("msg", "find this comment fail");
+        }
+        else {
+            retMsg.put("code", 1);
+            retMsg.put("msg", "find this comment successfully");
+            retMsg.put("data", JSONObject.toJSONString(comment));
+        }
+        return retMsg;
     }
 
     @RequestMapping(value = "/insert", method = RequestMethod.POST)
     public JSONObject insert(@RequestBody Comment comment) {
         JSONObject retMsg = new JSONObject();
+        comment.setCommentDate(dateFormat.format(new Date()));
         if (commentDao.insert(comment) > 0) {
             retMsg.put("code", 1);
-            retMsg.put("msg", "success");
+            retMsg.put("msg", "insert success");
             return retMsg;
         }
         else {
@@ -61,18 +91,18 @@ public class CommentController {
         }
     }
 
-    @RequestMapping(value = "/update", method = RequestMethod.POST)
-    public JSONObject update(@RequestBody Comment comment) {
-        JSONObject retMsg = new JSONObject();
-        if (commentDao.update(comment) > 0) {
-            retMsg.put("code", 1);
-            retMsg.put("msg", "success");
-            return retMsg;
-        }
-        else {
-            retMsg.put("code", 0);
-            retMsg.put("msg", "update error");
-            return retMsg;
-        }
-    }
+//    @RequestMapping(value = "/update", method = RequestMethod.POST)
+//    public JSONObject update(@RequestBody Comment comment) {
+//        JSONObject retMsg = new JSONObject();
+//        if (commentDao.update(comment) > 0) {
+//            retMsg.put("code", 1);
+//            retMsg.put("msg", "success");
+//            return retMsg;
+//        }
+//        else {
+//            retMsg.put("code", 0);
+//            retMsg.put("msg", "update error");
+//            return retMsg;
+//        }
+//    }
 }
