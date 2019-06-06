@@ -1,8 +1,12 @@
 package com.dounine.myblog.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.dounine.myblog.bean.Article;
 import com.dounine.myblog.bean.Comment;
+import com.dounine.myblog.bean.User;
+import com.dounine.myblog.dao.ArticleDao;
 import com.dounine.myblog.dao.CommentDao;
+import com.dounine.myblog.dao.UserDao;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +21,13 @@ import java.util.List;
 public class CommentController {
     @Autowired
     CommentDao commentDao;
+
+    @Autowired
+    UserDao userDao;
+
+    @Autowired
+    ArticleDao articleDao;
+
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
 
     @RequestMapping(value = "/listAll", method = RequestMethod.GET)
@@ -37,6 +48,10 @@ public class CommentController {
             retMsg.put("msg", "no comment");
         }
         else {
+            for (int i = 0; i < commentList.size(); i++) {
+                User user = userDao.findById(commentList.get(i).getCommenterId());
+                commentList.get(i).setCommenterName(user.getName());
+            }
             retMsg.put("code", 1);
             retMsg.put("msg", "successful");
             retMsg.put("data", JSONObject.toJSONString(commentList));
@@ -62,6 +77,9 @@ public class CommentController {
 
     @RequestMapping(value = "/insert", method = RequestMethod.POST)
     public JSONObject insert(@RequestBody Comment comment) {
+        Article article = articleDao.findById(comment.getArticleId());
+        article.setComments(article.getComments()+1);   // 文章评论数加一
+        articleDao.update(article);
         JSONObject retMsg = new JSONObject();
         comment.setCommentDate(dateFormat.format(new Date()));
         if (commentDao.insert(comment) > 0) {
@@ -78,6 +96,10 @@ public class CommentController {
 
     @RequestMapping(value = "/delete", method = RequestMethod.GET)
     public JSONObject delete(@RequestParam int id) {
+        Comment comment = commentDao.findById(id);
+        Article article = articleDao.findById(comment.getArticleId());
+        article.setComments(article.getComments()-1);   // 文章评论数减一
+        articleDao.update(article);
         JSONObject retMsg = new JSONObject();
         if (commentDao.delete(id) > 0) {
             retMsg.put("code", 1);

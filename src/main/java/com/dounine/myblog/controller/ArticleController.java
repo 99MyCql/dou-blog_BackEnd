@@ -8,6 +8,8 @@ import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -18,6 +20,7 @@ public class ArticleController {
 
     @Autowired
     ArticleDao articleDao;
+
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
 
     @RequestMapping(value = "/listAll", method = RequestMethod.GET)
@@ -47,8 +50,15 @@ public class ArticleController {
     }
 
     @RequestMapping(value = "/findByArticleTitle", method = RequestMethod.GET)
-    public JSONObject findByArticleTitle(@RequestParam String articleTitle) {
+    public JSONObject findByArticleTitle(@RequestParam String articleTitle, HttpServletRequest request) {
         Article article = articleDao.findByArticleTitle(articleTitle);
+        HttpSession session = request.getSession();
+        String userRole = (String)session.getAttribute("role");
+        // 如果不是管理员，文章阅读量加一
+        if (!userRole.equals("admin")) {
+            article.setReaders(article.getReaders()+1);
+            articleDao.update(article);
+        }
         JSONObject retMsg = new JSONObject();
         if (article == null) {
             retMsg.put("code", 0);

@@ -45,7 +45,7 @@ public class CommentDaoImpl implements CommentDao {
         String sql = "insert into comment(parentId, articleId, commenterId, commentDate, commentContent, likes) " +
                 "values(?, ?, ?, ?, ?, ?)";
         return jdbcTemplate.update(sql,
-                comment.getParent_id(), comment.getArticleId(), comment.getCommenterId(),
+                comment.getParentId(), comment.getArticleId(), comment.getCommenterId(),
                 comment.getCommentDate(), comment.getCommentContent(), comment.getLikes());
     }
 
@@ -60,7 +60,7 @@ public class CommentDaoImpl implements CommentDao {
         String sql = "update comment set (parentId, articleId, commenterId, commentDate, commentContent, likes) " +
                 "values(?, ?, ?, ?, ?, ?) where id = ?";
         return jdbcTemplate.update(sql,
-                newComment.getParent_id(), newComment.getArticleId(), newComment.getCommenterId(),
+                newComment.getParentId(), newComment.getArticleId(), newComment.getCommenterId(),
                 newComment.getCommentDate(), newComment.getCommentContent(), newComment.getLikes(),
                 newComment.getId());
     }

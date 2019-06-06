@@ -6,9 +6,11 @@ public class Comment {
 
     private int articleId;      // 被评论的文章ID
 
-    private int parent_id = 0;  // 回复的父id 若是评论则为 0，若是评论中的回复则为对应评论的id
+    private int parentId = 0;  // 回复的父id 若是评论则为 0，若是评论中的回复则为对应评论的id
 
     private int commenterId;    // 评论者ID
+
+    private String commenterName; // 评论者用户名，传输给前端
 
     private String commentDate; // 评论日期
 
@@ -18,10 +20,10 @@ public class Comment {
 
     public Comment() {}
 
-    public Comment(int articleId, int parent_id, int commenterId,
+    public Comment(int articleId, int parentId, int commenterId,
                     String commentDate, int likes, String commentContent) {
         this.articleId = articleId;
-        this.parent_id = parent_id;
+        this.parentId = parentId;
         this.commenterId = commenterId;
         this.commentDate = commentDate;
         this.likes = likes;
@@ -52,10 +54,13 @@ public class Comment {
         this.commenterId = commenterId;
     }
 
-    public void setParent_id(int parent_id) {
-        this.parent_id = parent_id;
+    public void setParentId(int parentId) {
+        this.parentId = parentId;
     }
 
+    public void setCommenterName(String commenterName) {
+        this.commenterName = commenterName;
+    }
 
     public int getLikes() {
         return likes;
@@ -73,8 +78,8 @@ public class Comment {
         return commenterId;
     }
 
-    public int getParent_id() {
-        return parent_id;
+    public int getParentId() {
+        return parentId;
     }
 
     public String getCommentContent() {
@@ -83,5 +88,9 @@ public class Comment {
 
     public String getCommentDate() {
         return commentDate;
+    }
+
+    public String getCommenterName() {
+        return commenterName;
     }
 }

@@ -51,12 +51,12 @@ public class ArticleDaoImpl implements ArticleDao {
         String sql = "insert into article(authorId," +
                 "articleTitle, articleContent, articleTags," +
                 "articleCategories,publishDate, updateDate, " +
-                "articleTabloid, likes, readers) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                "articleTabloid, likes, readers, comments) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         return jdbcTemplate.update(sql,
                 article.getAuthorId(),
                 article.getArticleTitle(),article.getArticleContent(), article.getArticleTags(),
                 article.getArticleCategories(),article.getPublishDate(), article.getUpdateDate(),
-                article.getArticleTabloid(), article.getLikes(), article.getReaders());
+                article.getArticleTabloid(), article.getLikes(), article.getReaders(), article.getComments());
     }
 
     @Override
@@ -70,12 +70,13 @@ public class ArticleDaoImpl implements ArticleDao {
         String sql = "update article set authorId = ?, " +
                 "articleTitle = ?, articleContent = ?, articleTags = ?, " +
                 "articleCategories = ?, publishDate = ?, updateDate = ?, " +
-                "articleTabloid = ?, likes = ?, readers = ? " +
+                "articleTabloid = ?, likes = ?, readers = ?, comments = ? " +
                 "where id = ?";
         return jdbcTemplate.update(sql,
                 newArticle.getAuthorId(), newArticle.getArticleTitle(),
                 newArticle.getArticleContent(), newArticle.getArticleTags(), newArticle.getArticleCategories(),
                 newArticle.getPublishDate(), newArticle.getUpdateDate(), newArticle.getArticleTabloid(),
-                newArticle.getLikes(), newArticle.getReaders(), newArticle.getId());
+                newArticle.getLikes(), newArticle.getReaders(), newArticle.getComments(),
+                newArticle.getId());
     }
 }

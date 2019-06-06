@@ -16,8 +16,9 @@ import java.io.IOException;
 public class SessionFilter implements javax.servlet.Filter {
 
     // 管理员才能访问的路径
-    private String[] adminUris = {"/api/user/listAll", "/api/user/findById", "/api/user/findByName", "/api/user/delete",
-                                "/api/article/submit", "/api/article/delete"};
+    private String[] adminUris = {"/api/user/listAll", "/api/user/delete",
+                                "/api/article/submit", "/api/article/delete",
+                                "/api/comment/update", "/api/comment/delete"};
 
     // 未登录也可访问的路径
     private String[] openUris = {"/api/user/login", "/api/user/register"};

@@ -24,6 +24,8 @@ public class Article {
 
     private int readers;      // 文章阅读数
 
+    private int comments;      // 文章评论数
+
     private long lastArticleId; // 上一篇文章id
 
     private long nextArticleId; // 下一篇文章id
@@ -32,7 +34,7 @@ public class Article {
 
     public Article(int authorId, String articleTitle, String publishDate,
                    String updateDate, String articleContent, String articleTags, String articleCategories,
-                   String articleTabloid, long lastArticleId, long nextArticleId,int readers,int likes) {
+                   String articleTabloid, long lastArticleId, long nextArticleId,int readers,int likes, int comments) {
         this.authorId = authorId;
         this.publishDate = publishDate;
         this.updateDate = updateDate;
@@ -43,6 +45,7 @@ public class Article {
         this.lastArticleId = lastArticleId;
         this.readers=readers;
         this.likes=likes;
+        this.comments=comments;
         this.nextArticleId = nextArticleId;
     }
 
@@ -98,6 +101,9 @@ public class Article {
         this.updateDate = updateDate;
     }
 
+    public void setComments(int comments) {
+        this.comments = comments;
+    }
 
     public int getAuthorId() {
         return authorId;
@@ -149,5 +155,9 @@ public class Article {
 
     public String getUpdateDate() {
         return updateDate;
+    }
+
+    public int getComments() {
+        return comments;
     }
 }
