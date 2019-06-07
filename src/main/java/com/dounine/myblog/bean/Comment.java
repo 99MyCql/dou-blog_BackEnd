@@ -6,6 +6,8 @@ public class Comment {
 
     private int articleId;      // 被评论的文章ID
 
+    private String articleTitle; // 文章标题，传输给前端
+
     private int parentId = 0;  // 回复的父id 若是评论则为 0，若是评论中的回复则为对应评论的id
 
     private int commenterId;    // 评论者ID
@@ -62,6 +64,10 @@ public class Comment {
         this.commenterName = commenterName;
     }
 
+    public void setArticleTitle(String articleTitle) {
+        this.articleTitle = articleTitle;
+    }
+
     public int getLikes() {
         return likes;
     }
@@ -92,5 +98,9 @@ public class Comment {
 
     public String getCommenterName() {
         return commenterName;
+    }
+
+    public String getArticleTitle() {
+        return articleTitle;
     }
 }

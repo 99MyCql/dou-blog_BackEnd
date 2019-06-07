@@ -34,6 +34,12 @@ public class CommentController {
     public String listAll(@RequestParam(defaultValue = "1") int page,
                            @RequestParam(defaultValue = "10") int size) {
         List<Comment> commentList = commentDao.listAllComments();
+        for (int i = 0; i < commentList.size(); i++) {
+            User user = userDao.findById(commentList.get(i).getCommenterId());
+            commentList.get(i).setCommenterName(user.getName());
+            Article article = articleDao.findById(commentList.get(i).getArticleId());
+            commentList.get(i).setArticleTitle(article.getArticleTitle());
+        }
         PageHelper.startPage(page, size);
         PageInfo<Comment> pageInfo = new PageInfo<>(commentList);
         return JSONObject.toJSONString(pageInfo);
