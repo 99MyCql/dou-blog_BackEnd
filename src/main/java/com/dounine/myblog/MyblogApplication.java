@@ -1,11 +1,10 @@
 package com.dounine.myblog;
 
 /***
- * @project myblog
- * @class MyblogApplication
+ * @project my-blog
  * @author douNine
- * @date 2019/6/7 16:09
- * @description TODO
+ * @date 2019/5/20
+ * @description 博客系统
  */
 
 import org.springframework.boot.SpringApplication;
