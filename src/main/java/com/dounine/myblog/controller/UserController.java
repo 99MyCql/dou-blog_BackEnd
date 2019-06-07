@@ -1,7 +1,9 @@
 package com.dounine.myblog.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.dounine.myblog.bean.Comment;
 import com.dounine.myblog.bean.User;
+import com.dounine.myblog.dao.CommentDao;
 import com.dounine.myblog.dao.UserDao;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -18,6 +20,9 @@ import java.util.List;
 public class UserController {
     @Autowired
     UserDao userDao;
+
+    @Autowired
+    CommentDao commentDao;
 
     @RequestMapping(value = "/listAll", method = RequestMethod.GET)
     public String listAll(@RequestParam(defaultValue = "1") int page,
@@ -77,6 +82,11 @@ public class UserController {
 
     @RequestMapping(value = "/delete", method = RequestMethod.GET)
     public JSONObject delete(@RequestParam int id) {
+        // 删除文章，需要删除该文章相关的评论
+        List<Comment> commentList = commentDao.listByCommenterId(id);
+        for (int i = 0; i < commentList.size(); i++) {
+            commentDao.delete(commentList.get(i).getId());
+        }
         JSONObject retMsg = new JSONObject();
         if (userDao.delete(id) > 0) {
             retMsg.put("code", 1);

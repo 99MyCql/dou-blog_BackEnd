@@ -9,6 +9,8 @@ public interface CommentDao {
 
     public List<Comment> listByArticleId(int articleId);
 
+    public List<Comment> listByCommenterId(int commenterId);
+
     public Comment findById(int id);
 
     public int insert(Comment comment);

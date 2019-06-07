@@ -30,6 +30,11 @@ public class CommentDaoImpl implements CommentDao {
     }
 
     @Override
+    public List<Comment> listByCommenterId(int commenterId) {
+        return jdbcTemplate.query("select * from comment where commenterId = ?", new BeanPropertyRowMapper(Comment.class), commenterId);
+    }
+
+    @Override
     public Comment findById(int id) {
         String sql = "select * from comment where id = ?";
         try {

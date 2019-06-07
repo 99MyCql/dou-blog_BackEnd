@@ -109,7 +109,7 @@ public class CommentController {
         JSONObject retMsg = new JSONObject();
         if (commentDao.delete(id) > 0) {
             retMsg.put("code", 1);
-            retMsg.put("msg", "success");
+            retMsg.put("msg", "delete success");
             return retMsg;
         }
         else {

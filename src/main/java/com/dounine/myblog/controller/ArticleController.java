@@ -2,7 +2,9 @@ package com.dounine.myblog.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.dounine.myblog.bean.Article;
+import com.dounine.myblog.bean.Comment;
 import com.dounine.myblog.dao.ArticleDao;
+import com.dounine.myblog.dao.CommentDao;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,9 @@ public class ArticleController {
 
     @Autowired
     ArticleDao articleDao;
+
+    @Autowired
+    CommentDao commentDao;
 
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
 
@@ -119,6 +124,11 @@ public class ArticleController {
 
     @RequestMapping(value = "/delete", method = RequestMethod.GET)
     public JSONObject delete(@RequestParam int id) {
+        // 删除文章，需要删除该文章相关的评论
+        List<Comment> commentList = commentDao.listByArticleId(id);
+        for (int i = 0; i < commentList.size(); i++) {
+            commentDao.delete(commentList.get(i).getId());
+        }
         JSONObject retMsg = new JSONObject();
         if (articleDao.delete(id) > 0) {
             retMsg.put("code", 1);
