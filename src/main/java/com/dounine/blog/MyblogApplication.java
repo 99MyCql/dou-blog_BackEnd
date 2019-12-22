@@ -1,4 +1,4 @@
-package com.dounine.myblog;
+package com.dounine.blog;
 
 /***
  * @project my-blog

@@ -1,7 +1,7 @@
-package com.dounine.myblog.dao.impl;
+package com.dounine.blog.dao.impl;
 
-import com.dounine.myblog.bean.User;
-import com.dounine.myblog.dao.UserDao;
+import com.dounine.blog.bean.User;
+import com.dounine.blog.dao.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;

@@ -1,4 +1,4 @@
-package com.dounine.myblog.config;
+package com.dounine.blog.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -17,7 +17,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Configuration
 @EnableWebMvc
 @EnableSwagger2
-@ComponentScan(basePackages = {"com.dounine.myblog.controller"})
+@ComponentScan(basePackages = {"com.dounine.blog.controller"})
 @Component
 @ConfigurationProperties(prefix = "swagger")
 @Data

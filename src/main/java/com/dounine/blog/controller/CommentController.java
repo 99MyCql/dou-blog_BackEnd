@@ -1,12 +1,12 @@
-package com.dounine.myblog.controller;
+package com.dounine.blog.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.dounine.myblog.bean.Article;
-import com.dounine.myblog.bean.Comment;
-import com.dounine.myblog.bean.User;
-import com.dounine.myblog.dao.ArticleDao;
-import com.dounine.myblog.dao.CommentDao;
-import com.dounine.myblog.dao.UserDao;
+import com.dounine.blog.bean.Article;
+import com.dounine.blog.bean.Comment;
+import com.dounine.blog.bean.User;
+import com.dounine.blog.dao.ArticleDao;
+import com.dounine.blog.dao.CommentDao;
+import com.dounine.blog.dao.UserDao;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;

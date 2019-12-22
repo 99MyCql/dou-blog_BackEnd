@@ -1,4 +1,4 @@
-package com.dounine.myblog.controller;
+package com.dounine.blog.controller;
 
 import com.alibaba.fastjson.JSONObject;
 

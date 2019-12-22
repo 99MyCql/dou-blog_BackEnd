@@ -1,4 +1,4 @@
-package com.dounine.myblog.config;
+package com.dounine.blog.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

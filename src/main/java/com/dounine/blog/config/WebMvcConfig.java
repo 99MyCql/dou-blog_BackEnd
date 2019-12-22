@@ -1,4 +1,4 @@
-package com.dounine.myblog.config;
+package com.dounine.blog.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;

@@ -1,4 +1,4 @@
-package com.dounine.myblog.bean;
+package com.dounine.blog.bean;
 
 public class User {
 

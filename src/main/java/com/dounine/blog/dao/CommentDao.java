@@ -1,6 +1,6 @@
-package com.dounine.myblog.dao;
+package com.dounine.blog.dao;
 
-import com.dounine.myblog.bean.Comment;
+import com.dounine.blog.bean.Comment;
 
 import java.util.List;
 

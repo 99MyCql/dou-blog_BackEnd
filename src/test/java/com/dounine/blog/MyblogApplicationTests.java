@@ -1,4 +1,4 @@
-package com.dounine.myblog;
+package com.dounine.blog;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

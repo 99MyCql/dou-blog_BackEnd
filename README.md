@@ -1,39 +1,103 @@
-## myblog_Backend
+# dou-blog_Backend
 
-### 简介
+## Introduction
 
-博客系统后端
+博客系统后端，使用`spring boot`框架。
 
-使用`spring boot`框架
+前端见[dou-blog_FrontEnd](https://github.com/99MyCql/dou-blog_FrontEnd)。
 
-### 项目配置
+## Requirement Analysis
 
-`/src/main/resources`目录下的`application.properties`文件为项目配置文件。
+- [ ] 用户
+    - [x] 登录
+    - [x] 注册
+        - [x] 创建用户名、密码
+        - [ ] 邮箱验证
+    - [x] 用户修改自己信息
+    - [x] 管理员可以删除用户
+    - [x] 分类：管理员与普通用户
+- [ ] 文章
+    - [x] 管理员才能发布文章
+    - [x] 管理员可以删除文章
+    - [x] 用户可以浏览文章
+    - [x] 评论
+        - [x] 所有用户登录后都能评论文章
+        - [x] 管理员可以删除评论
+    - [ ] 分类
+        - [ ] 管理员可以添加分类
+        - [ ] 分类具有树级关系
+        - [ ] 管理员可以设置文章的分类
+        - [ ] 用户可以根据分类筛选文章
 
-由于存在数据库账号密码，未用`git`跟踪，需要自己新建。
+## Usage
 
-其文件内容大致如下：
+### Add Configuration File
 
-```properties
-# mysql配置
+由于配置文件中保存了数据库账号和密码，未用`git`跟踪，需要自己新建。
+
+在`src/main/resources`目录下，新建配置文件`application.properties`。内容大致如下：
+
+```config
+# Mysql
 spring.datasource.url = jdbc:mysql://数据库地址(localhost):3306/数据库名?characterEncoding=UTF-8&serverTimezone=UTC
 spring.datasource.username = 用户名
 spring.datasource.password = 密码
 spring.datasource.driver-class-name = com.mysql.jdbc.Driver
 
+# Swagger
 swagger.title = Swagger页面标题
 
-# http请求响应，设置utf-8编码
+# Http
 spring.http.encoding.charset = UTF-8
 spring.http.encoding.enabled = true
 spring.http.encoding.force = true
 
+# Built in web server --- Tomcat
 server.tomcat.uri-encoding = UTF-8
 ```
 
-### 项目规范
+### Run
 
-#### `http`响应内容格式
+在命令行中直接运行：
+
+```cmd
+mvn spring-boot:run
+```
+
+在命令行中编译：
+
+```cmd
+mvn install
+```
+
+生成`dou-blog-0.0.1-SNAPSHOT.jar`于`target/`目录下，运行`.jar`包：
+
+```cmd
+cd target
+java -jar dou-blog-0.0.1-SNAPSHOT.jar
+```
+
+以上操作可在IDEA中进行。
+
+## Format
+
+### Git Commit
+
+```cmd
+git commit -m "type: description"
+```
+
+- type:
+    - feat：新功能（feature）
+    - fix：修补bug
+    - docs：文档（documentation）
+    - style：格式（不影响代码运行的变动）
+    - refactor：重构（即不是新增功能，也不是修改bug的代码变动）
+    - test：增加测试
+    - chore：构建过程或辅助工具的变动
+- description: 详细描述
+
+### Http Response
 
 采用`json`格式，`json`中具体内容如下：
 
