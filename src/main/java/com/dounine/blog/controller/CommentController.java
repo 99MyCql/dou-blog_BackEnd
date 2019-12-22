@@ -11,6 +11,8 @@ import com.dounine.blog.util.RetMsgHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -82,7 +84,7 @@ public class CommentController {
     }
 
     @RequestMapping(value = "/insert", method = RequestMethod.POST)
-    public JSONObject insert(@RequestBody Comment comment) {
+    public JSONObject insert(@RequestBody Comment comment, HttpServletRequest request) {
 
         JSONObject retMsg; // 返回信息
 
@@ -91,6 +93,9 @@ public class CommentController {
         articleService.update(article);                                     // 更新该文章
 
         comment.setCommentDate(dateFormat.format(new Date())); // 记录评论时间
+
+        HttpSession session = request.getSession();                         // 获取 session
+        comment.setCommenterId((int)session.getAttribute("userId"));    // 从session中获取当前用户 id
 
         // 插入数据成功
         if (commentService.insert(comment) > 0) {
