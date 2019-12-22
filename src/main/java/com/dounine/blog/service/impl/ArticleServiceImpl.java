@@ -1,7 +1,7 @@
-package com.dounine.blog.dao.impl;
+package com.dounine.blog.service.impl;
 
 import com.dounine.blog.bean.Article;
-import com.dounine.blog.dao.ArticleDao;
+import com.dounine.blog.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -11,17 +11,17 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public class ArticleDaoImpl implements ArticleDao {
+public class ArticleServiceImpl implements ArticleService {
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public ArticleDaoImpl(JdbcTemplate jdbcTemplate) {
+    public ArticleServiceImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
-    public List<Article> listAllArticles() {
-        return jdbcTemplate.query("select * from article", new BeanPropertyRowMapper(Article.class));
+    public List<Article> listAllArticles(int page, int size) {
+        return jdbcTemplate.query("select * from article limit ?, ?", new BeanPropertyRowMapper(Article.class), (page-1)*size, size);
     }
 
     @Override

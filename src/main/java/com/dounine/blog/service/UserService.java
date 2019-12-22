@@ -1,11 +1,11 @@
-package com.dounine.blog.dao;
+package com.dounine.blog.service;
 
 import com.dounine.blog.bean.User;
 
 import java.util.List;
 
-public interface UserDao {
-    public List<User> listAllUsers();
+public interface UserService {
+    public List<User> listAllUsers(int page, int size);
 
     public User findById(int userId);
 

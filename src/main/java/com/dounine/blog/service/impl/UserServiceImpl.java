@@ -1,7 +1,7 @@
-package com.dounine.blog.dao.impl;
+package com.dounine.blog.service.impl;
 
 import com.dounine.blog.bean.User;
-import com.dounine.blog.dao.UserDao;
+import com.dounine.blog.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -11,18 +11,18 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public class UserDaoImpl implements UserDao {
+public class UserServiceImpl implements UserService {
 
     @Autowired
     private final JdbcTemplate jdbcTemplate;
 
-    public UserDaoImpl(JdbcTemplate jdbcTemplate) {
+    public UserServiceImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
-    public List<User> listAllUsers() {
-        return jdbcTemplate.query("select * from user", new BeanPropertyRowMapper(User.class));
+    public List<User> listAllUsers(int page, int size) {
+        return jdbcTemplate.query("select * from user limit ?, ?", new BeanPropertyRowMapper(User.class), (page-1)*size, size);
     }
 
     @Override

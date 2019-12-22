@@ -40,7 +40,7 @@ public class SessionFilter implements javax.servlet.Filter {
             if (session != null && session.getAttribute("username") != null) {
                 System.out.println("该用户已经登录");
                 // 如果不是管理员，却访问管理员路径，则返回状态码3(莫得权限)
-                if (!((String)session.getAttribute("role")).equals("admin") && isExist(uri, adminUris)) {
+                if (!((String)session.getAttribute("userRole")).equals("admin") && isExist(uri, adminUris)) {
                     System.out.println("该用户不是管理员");
                     retMsg.put("code", 3);
                     retMsg.put("msg", "you don't have authority");

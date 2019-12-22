@@ -3,12 +3,10 @@ package com.dounine.blog.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.dounine.blog.bean.Comment;
 import com.dounine.blog.bean.User;
-import com.dounine.blog.dao.CommentDao;
-import com.dounine.blog.dao.UserDao;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
+import com.dounine.blog.service.CommentService;
+import com.dounine.blog.service.UserService;
+import com.dounine.blog.util.RetMsgHandler;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,163 +17,141 @@ import java.util.List;
 @RequestMapping("/api/user")
 public class UserController {
     @Autowired
-    UserDao userDao;
+    UserService userService;
 
     @Autowired
-    CommentDao commentDao;
+    CommentService commentService;
+
 
     @RequestMapping(value = "/listAll", method = RequestMethod.GET)
-    public String listAll(@RequestParam(defaultValue = "1") int page,
-                           @RequestParam(defaultValue = "10") int size) {
-        List<User> userList = userDao.listAllUsers();
-        PageHelper.startPage(page, size);
-        PageInfo<User> pageInfo = new PageInfo<>(userList);
-        return JSONObject.toJSONString(pageInfo);
+    public JSONObject listAll(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size) {
+
+        List<User> userList = userService.listAllUsers(page, size); // 根据 page, size 查询所有用户
+
+        return RetMsgHandler.getRetMsg(
+                RetMsgHandler.SUCCESS_CODE,
+                "list users successfully",
+                JSONObject.toJSONString(userList));
     }
 
     @RequestMapping(value = "/findById", method = RequestMethod.GET)
     public JSONObject findById(@RequestParam int id) {
-        User user = userDao.findById(id);
-        JSONObject retMsg = new JSONObject();
-        if (user != null) {
-            retMsg.put("code", 1);
-            retMsg.put("msg", "find this user successfully");
-            retMsg.put("data", JSONObject.toJSONString(user));
+
+        JSONObject retMsg; // 返回信息
+
+        User user = userService.findById(id); // 根据 id 查询 user
+
+        // 如果该 user 不存在
+        if (user == null) {
+            retMsg = RetMsgHandler.getRetMsg(RetMsgHandler.FAIL_CODE, "no this user");
         }
         else {
-            retMsg.put("code", 0);
-            retMsg.put("msg", "no this user");
+            retMsg = RetMsgHandler.getRetMsg(RetMsgHandler.SUCCESS_CODE, "find this comment successfully", JSONObject.toJSONString(user));
         }
         return retMsg;
     }
 
     @RequestMapping(value = "/findByName", method = RequestMethod.GET)
     public JSONObject findByName(@RequestParam String name) {
-        User user = userDao.findByName(name);
-        JSONObject retMsg = new JSONObject();
-        if (user != null) {
-            retMsg.put("code", 1);
-            retMsg.put("msg", "find this user successfully");
-            retMsg.put("data", JSONObject.toJSONString(user));
+
+        JSONObject retMsg; // 返回信息
+
+        User user = userService.findByName(name); // 根据 name 查询 user
+
+        // 如果该 user 不存在
+        if (user == null) {
+            retMsg = RetMsgHandler.getRetMsg(RetMsgHandler.FAIL_CODE, "no this user");
         }
         else {
-            retMsg.put("code", 0);
-            retMsg.put("msg", "no this user");
+            retMsg = RetMsgHandler.getRetMsg(RetMsgHandler.SUCCESS_CODE, "find this comment successfully", JSONObject.toJSONString(user));
         }
         return retMsg;
     }
 
-//    @RequestMapping(value = "/insert", method = RequestMethod.POST)
-//    public JSONObject insert(@RequestBody User user) {
-//        JSONObject retMsg = new JSONObject();
-//        if (userDao.insert(user) > 0) {
-//            retMsg.put("code", 1);
-//            retMsg.put("msg", "success");
-//            return retMsg;
-//        }
-//        else {
-//            retMsg.put("code", 0);
-//            retMsg.put("msg", "insert error");
-//            return retMsg;
-//        }
-//    }
-
     @RequestMapping(value = "/delete", method = RequestMethod.GET)
     public JSONObject delete(@RequestParam int id) {
-        // 删除用户，需要删除该用户相关的评论
-        List<Comment> commentList = commentDao.listByCommenterId(id);
-        for (int i = 0; i < commentList.size(); i++) {
-            commentDao.delete(commentList.get(i).getId());
+
+        JSONObject retMsg; // 返回信息
+
+        // 删除用户，需要删除与该用户发表的所有评论
+        List<Comment> commentList = commentService.listByCommenterId(id); // 查询该用户发表过的所有评论
+        for (Comment comment : commentList) {
+            commentService.delete(comment.getId());
         }
-        JSONObject retMsg = new JSONObject();
-        if (userDao.delete(id) > 0) {
-            retMsg.put("code", 1);
-            retMsg.put("msg", "success");
+
+        // 删除成功
+        if (userService.delete(id) > 0) {
+            retMsg = RetMsgHandler.getRetMsg(RetMsgHandler.SUCCESS_CODE, "delete this user successfully");
         }
         else {
-            retMsg.put("code", 0);
-            retMsg.put("msg", "delete error");
+            retMsg = RetMsgHandler.getRetMsg(RetMsgHandler.ERROR_CODE, "delete this user error");
         }
         return retMsg;
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     public JSONObject update(@RequestBody User user) {
-        JSONObject retMsg = new JSONObject();
-        if (userDao.update(user) > 0) {
-            retMsg.put("code", 1);
-            retMsg.put("msg", "success");
+
+        JSONObject retMsg; // 返回信息
+
+        // 更新用户成功
+        if (userService.update(user) > 0) {
+            retMsg = RetMsgHandler.getRetMsg(RetMsgHandler.SUCCESS_CODE, "update this user successfully");
         }
         else {
-            retMsg.put("code", 0);
-            retMsg.put("msg", "update error");
+            retMsg = RetMsgHandler.getRetMsg(RetMsgHandler.ERROR_CODE, "update this user error");
         }
         return retMsg;
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public JSONObject login(@RequestParam String name, @RequestParam String password, HttpServletRequest request) {
-        User user;
-        try {
-            user = userDao.findByName(name);
-        } catch (EmptyResultDataAccessException e) {
-            System.out.println(e);
-            user = null;
-        }
-        JSONObject retMsg = new JSONObject();
+
+        JSONObject retMsg; // 返回信息
+
+        User user = userService.findByName(name); // 根据用户名查找该用户
+        // 如果存在该用户
         if (user != null) {
+            // 密码正确
             if (user.getPassword().equals(password)) {
-                retMsg.put("code", 1);
-                retMsg.put("msg", "login success");
-                HttpSession session = request.getSession();
-                session.setAttribute("username", name);
-                session.setAttribute("role", user.getRole());
+                HttpSession session = request.getSession();             // 获取 session
+                session.setAttribute("userId", user.getId());       // 在 session 中保存用户 id
+                session.setAttribute("username", name);             // 在 session 中保存用户姓名
+                session.setAttribute("userRole", user.getRole());   // 在 session 中保存用户身份
+                retMsg = RetMsgHandler.getRetMsg(RetMsgHandler.SUCCESS_CODE, "login successfully");
             }
+            // 密码错误
             else {
-                retMsg.put("code", 0);
-                retMsg.put("msg", "password error");
+                retMsg = RetMsgHandler.getRetMsg(RetMsgHandler.FAIL_CODE, "invalid password");
             }
         }
+        // 该用户不存在
         else {
-            retMsg.put("code", 0);
-            retMsg.put("msg", "no this user");
+            retMsg = RetMsgHandler.getRetMsg(RetMsgHandler.FAIL_CODE, "no this user");
         }
         return retMsg;
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public JSONObject register(@RequestBody User user) {
-        JSONObject retMsg = new JSONObject();
-        if (userDao.findByName(user.getName()) == null) {
-            if (userDao.insert(user) > 0) {
-                retMsg.put("code", 1);
-                retMsg.put("msg", "register success");
+
+        JSONObject retMsg; // 返回信息
+
+        // 如果用户名不存在
+        if (userService.findByName(user.getName()) == null) {
+            // 插入成功
+            if (userService.insert(user) > 0) {
+                retMsg = RetMsgHandler.getRetMsg(RetMsgHandler.SUCCESS_CODE, "login successfully");
             }
+            // 插入失败
             else {
-                retMsg.put("code", 0);
-                retMsg.put("msg", "register error");
+                retMsg = RetMsgHandler.getRetMsg(RetMsgHandler.ERROR_CODE, "register error");
             }
         }
+        // 用户名已存在
         else {
-            retMsg.put("code", 0);
-            retMsg.put("msg", "this username is exist");
+            retMsg = RetMsgHandler.getRetMsg(RetMsgHandler.FAIL_CODE, "this username is exist");
         }
         return retMsg;
     }
-
-//    @RequestMapping(value = "/getRole", method = RequestMethod.GET)
-//    public JSONObject getRole(@RequestParam String name) {
-//        User user = userDao.findByName(name);
-//        JSONObject retMsg = new JSONObject();
-//        if (user != null) {
-//            retMsg.put("code", 1);
-//            retMsg.put("msg", "find this user successfully");
-//            retMsg.put("data", user.getRole());
-//        }
-//        else {
-//            retMsg.put("code", 0);
-//            retMsg.put("msg", "no this user");
-//        }
-//        return retMsg;
-//    }
 }

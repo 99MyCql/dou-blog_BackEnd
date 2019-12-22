@@ -1,7 +1,7 @@
-package com.dounine.blog.dao.impl;
+package com.dounine.blog.service.impl;
 
 import com.dounine.blog.bean.Comment;
-import com.dounine.blog.dao.CommentDao;
+import com.dounine.blog.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -11,17 +11,17 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public class CommentDaoImpl implements CommentDao {
+public class CommentServiceImpl implements CommentService {
     @Autowired
     private final JdbcTemplate jdbcTemplate;
 
-    public CommentDaoImpl(JdbcTemplate jdbcTemplate) {
+    public CommentServiceImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
-    public List<Comment> listAllComments() {
-        return jdbcTemplate.query("select * from comment", new BeanPropertyRowMapper(Comment.class));
+    public List<Comment> listAllComments(int page, int size) {
+        return jdbcTemplate.query("select * from comment limit ?, ?", new BeanPropertyRowMapper(Comment.class), (page-1)*size, size);
     }
 
     @Override

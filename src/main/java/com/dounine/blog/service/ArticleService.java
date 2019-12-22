@@ -1,11 +1,11 @@
-package com.dounine.blog.dao;
+package com.dounine.blog.service;
 
 import com.dounine.blog.bean.Article;
 
 import java.util.List;
 
-public interface ArticleDao {
-    public List<Article> listAllArticles();
+public interface ArticleService {
+    public List<Article> listAllArticles(int page, int size);
 
     public Article findById(int id);
 
