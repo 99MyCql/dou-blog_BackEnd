@@ -25,8 +25,8 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<Comment> listByArticleId(int articleId) {
-        return jdbcTemplate.query("select * from comment where articleId = ?", new BeanPropertyRowMapper(Comment.class), articleId);
+    public List<Comment> listByArticleId(int articleId, int page, int size) {
+        return jdbcTemplate.query("select * from comment where articleId = ? limit ?, ?", new BeanPropertyRowMapper(Comment.class), articleId, (page-1)*size, size);
     }
 
     @Override

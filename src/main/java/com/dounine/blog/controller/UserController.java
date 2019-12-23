@@ -46,6 +46,7 @@ public class UserController {
             retMsg = RetMsgHandler.getRetMsg(RetMsgHandler.FAIL_CODE, "no this user");
         }
         else {
+            user.setPassword("");   // 防止信息暴露给前端，设置 password 为空
             retMsg = RetMsgHandler.getRetMsg(RetMsgHandler.SUCCESS_CODE, "find this comment successfully", JSONObject.toJSONString(user));
         }
         return retMsg;
@@ -63,6 +64,7 @@ public class UserController {
             retMsg = RetMsgHandler.getRetMsg(RetMsgHandler.FAIL_CODE, "no this user");
         }
         else {
+            user.setPassword("");   // 防止信息暴露给前端，设置 password 为空
             retMsg = RetMsgHandler.getRetMsg(RetMsgHandler.SUCCESS_CODE, "find this comment successfully", JSONObject.toJSONString(user));
         }
         return retMsg;

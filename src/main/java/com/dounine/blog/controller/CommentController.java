@@ -50,11 +50,11 @@ public class CommentController {
     }
 
     @RequestMapping(value = "/listByArticleId", method = RequestMethod.GET)
-    public JSONObject listByArticleId(@RequestParam int articleId) {
+    public JSONObject listByArticleId(@RequestParam int articleId, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size) {
 
         JSONObject retMsg; // 返回信息
 
-        List<Comment> commentList = commentService.listByArticleId(articleId); // 根据 articleId 查询评论
+        List<Comment> commentList = commentService.listByArticleId(articleId, page, size); // 根据 articleId 查询评论
 
         // 根据每条评论中的 commenterId ，查询对应的作者名。如此操作是为了方便前端
         for (Comment comment : commentList) {
