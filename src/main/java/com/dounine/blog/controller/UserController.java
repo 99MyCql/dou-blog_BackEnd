@@ -134,6 +134,25 @@ public class UserController {
         return retMsg;
     }
 
+    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+    public JSONObject logout(@RequestParam String name, HttpServletRequest request) {
+
+        JSONObject retMsg; // 返回信息
+
+        HttpSession session = request.getSession(); // 获取session
+        // 判断该用户名与 session 中的用户名是否相同
+        if (((String)session.getAttribute("username")).equals(name)) {
+            session.removeAttribute("username");    // 移除 session 中的 username
+            session.removeAttribute("userId");      // 移除 userId
+            session.removeAttribute("userRole");    // 移除 userRole
+            retMsg = RetMsgHandler.getRetMsg(RetMsgHandler.SUCCESS_CODE, "logout successfully");
+        }
+        else {
+            retMsg = RetMsgHandler.getRetMsg(RetMsgHandler.FAIL_CODE, "invalid username, logout fail");
+        }
+        return retMsg;
+    }
+
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public JSONObject register(@RequestBody User user) {
 

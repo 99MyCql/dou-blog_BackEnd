@@ -9,6 +9,8 @@ public interface CommentService {
 
     public List<Comment> listByArticleId(int articleId, int page, int size);
 
+    public List<Comment> listByArticleId(int articleId);
+
     public List<Comment> listByCommenterId(int commenterId);
 
     public Comment findById(int id);
