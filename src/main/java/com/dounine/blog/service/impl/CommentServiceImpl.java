@@ -19,6 +19,12 @@ public class CommentServiceImpl implements CommentService {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+
+    @Autowired
+    public int countComments() {
+        return jdbcTemplate.queryForObject("select count(*) from comment", Integer.class);
+    }
+
     @Override
     public List<Comment> listAllComments(int page, int size) {
         return jdbcTemplate.query("select * from comment limit ?, ?", new BeanPropertyRowMapper(Comment.class), (page-1)*size, size);

@@ -5,6 +5,9 @@ import com.dounine.blog.bean.User;
 import java.util.List;
 
 public interface UserService {
+
+    public int countUsers();
+
     public List<User> listAllUsers(int page, int size);
 
     public User findById(int userId);

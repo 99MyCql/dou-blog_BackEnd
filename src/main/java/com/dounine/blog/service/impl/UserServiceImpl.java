@@ -20,6 +20,11 @@ public class UserServiceImpl implements UserService {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    @Autowired
+    public int countUsers() {
+        return jdbcTemplate.queryForObject("select count(*) from user", Integer.class);
+    }
+
     @Override
     public List<User> listAllUsers(int page, int size) {
         return jdbcTemplate.query("select * from user limit ?, ?", new BeanPropertyRowMapper(User.class), (page-1)*size, size);

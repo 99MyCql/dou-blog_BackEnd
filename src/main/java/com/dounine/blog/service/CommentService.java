@@ -5,6 +5,9 @@ import com.dounine.blog.bean.Comment;
 import java.util.List;
 
 public interface CommentService {
+
+    public int countComments();
+
     public List<Comment> listAllComments(int page, int size);
 
     public List<Comment> listByArticleId(int articleId, int page, int size);

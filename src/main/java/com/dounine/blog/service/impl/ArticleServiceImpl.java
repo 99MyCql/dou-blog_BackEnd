@@ -14,6 +14,12 @@ import java.util.List;
 public class ArticleServiceImpl implements ArticleService {
     private final JdbcTemplate jdbcTemplate;
 
+
+    @Autowired
+    public int countArticles() {
+        return jdbcTemplate.queryForObject("select count(*) from article", Integer.class);
+    }
+
     @Autowired
     public ArticleServiceImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;

@@ -31,6 +31,18 @@ public class CommentController {
 
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
 
+
+    @RequestMapping(value = "/count", method = RequestMethod.GET)
+    public JSONObject count() {
+
+        int count = commentService.countComments();
+
+        return RetMsgHandler.getRetMsg(
+                RetMsgHandler.SUCCESS_CODE,
+                "get the count of comments successfully",
+                JSONObject.toJSONString(count));
+    }
+
     @RequestMapping(value = "/listAll", method = RequestMethod.GET)
     public JSONObject listAll(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size) {
 

@@ -23,6 +23,17 @@ public class UserController {
     CommentService commentService;
 
 
+    @RequestMapping(value = "/count", method = RequestMethod.GET)
+    public JSONObject count() {
+
+        int count = userService.countUsers();
+
+        return RetMsgHandler.getRetMsg(
+                RetMsgHandler.SUCCESS_CODE,
+                "get the count of users successfully",
+                JSONObject.toJSONString(count));
+    }
+
     @RequestMapping(value = "/listAll", method = RequestMethod.GET)
     public JSONObject listAll(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size) {
 

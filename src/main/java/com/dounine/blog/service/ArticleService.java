@@ -5,6 +5,9 @@ import com.dounine.blog.bean.Article;
 import java.util.List;
 
 public interface ArticleService {
+
+    public int countArticles();
+
     public List<Article> listAllArticles(int page, int size);
 
     public Article findById(int id);
