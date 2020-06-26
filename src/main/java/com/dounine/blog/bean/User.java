@@ -2,40 +2,25 @@ package com.dounine.blog.bean;
 
 public class User {
 
-    private int id; // 主键
+    private int id;         // 主键
 
-    private String phone;
-
-    private String name;
+    private String username;
 
     private String password;
 
-    private int gender; // 0 女，1 男
+    private int sex;        // 0 女，1 男
 
-    private String personalBrief;
+    private String phone;
 
     private String email;
 
     private String qq;
 
+    private String profile;
+
     private String birthday;
 
     private String role;
-
-    public User() {}
-
-    public User(String phone, String name, String password, int gender,
-                String personalBrief, String email, String qq, String birthday, String role) {
-        this.phone = phone;
-        this.name = name;
-        this.password = password;
-        this.gender = gender;
-        this.personalBrief = personalBrief;
-        this.email = email;
-        this.qq = qq;
-        this.birthday = birthday;
-        this.role = role;
-    }
 
     public void setId(int id) {
         this.id = id;
@@ -45,12 +30,12 @@ public class User {
         return id;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public String getName() {
-        return name;
+    public String getUsername() {
+        return username;
     }
 
     public void setPassword(String password) {
@@ -77,20 +62,20 @@ public class User {
         return email;
     }
 
-    public void setGender(int gender) {
-        this.gender = gender;
+    public void setSex(int sex) {
+        this.sex = sex;
     }
 
-    public int getGender() {
-        return gender;
+    public int getSex() {
+        return sex;
     }
 
-    public void setPersonalBrief(String personalBrief) {
-        this.personalBrief = personalBrief;
+    public void setProfile(String profile) {
+        this.profile = profile;
     }
 
-    public String getPersonalBrief() {
-        return personalBrief;
+    public String getProfile() {
+        return profile;
     }
 
     public void setQq(String qq) {

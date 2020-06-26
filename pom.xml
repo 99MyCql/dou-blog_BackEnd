@@ -11,7 +11,7 @@
     <groupId>com.dounine</groupId>
     <artifactId>dou-blog</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>dou-blog</name>
+    <username>dou-blog</username>
     <description>my blog of Spring Boot</description>
 
     <properties>

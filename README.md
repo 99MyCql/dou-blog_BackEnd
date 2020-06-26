@@ -10,29 +10,28 @@
 
 - [ ] 用户
     - [ ] 登录
-        - [x] 登录成功后，在session中保存用户信息
-        - [ ] 退出登录后，在session中清除用户信息
-    - [x] 注册
+        - [x] 登录成功后，在一段时间内，用户无须重复登录
+        - [ ] 退出登录后，下次需重新登录
+    - [ ] 注册
         - [x] 创建用户名、密码
-        - [ ] 密码加密保存
+        - [ ] 密码加密传输并保存
         - [ ] 邮箱验证
     - [x] 用户修改自己信息
     - [x] 管理员可以删除用户
-        - [x] 同时删除用户发表的评论
     - [x] 分类：管理员与普通用户
 - [ ] 文章
     - [x] 管理员才能发布文章
     - [x] 管理员可以删除文章
-        - [x] 同时删除该文章的评论
-    - [x] 用户可以浏览文章
-    - [x] 评论
-        - [x] 所有用户登录后都能评论文章
-        - [x] 管理员可以删除评论
-    - [ ] 分类
-        - [ ] 管理员可以添加分类
-        - [ ] 分类具有树级关系
-        - [ ] 管理员可以设置文章的分类
-        - [ ] 用户可以根据分类筛选文章
+    - [x] 管理员才能更新文章
+    - [ ] 不论用户是否登录，都可以浏览文章
+- [x] 评论
+    - [x] 用户登录后，可以评论文章
+    - [x] 管理员可以删除评论
+- [ ] 分类
+    - [ ] 管理员可以添加分类
+    - [ ] 分类具有树级关系
+    - [ ] 管理员可以设置文章的分类
+    - [ ] 用户可以根据分类筛选文章
 
 ## Usage
 
@@ -47,7 +46,7 @@
 spring.datasource.url = jdbc:mysql://数据库地址(localhost):3306/数据库名?characterEncoding=UTF-8&serverTimezone=UTC
 spring.datasource.username = 用户名
 spring.datasource.password = 密码
-spring.datasource.driver-class-name = com.mysql.jdbc.Driver
+spring.datasource.driver-class-username = com.mysql.jdbc.Driver
 
 # Swagger
 swagger.title = Swagger页面标题

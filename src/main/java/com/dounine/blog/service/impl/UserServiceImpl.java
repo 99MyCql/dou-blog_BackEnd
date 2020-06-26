@@ -1,81 +1,90 @@
 package com.dounine.blog.service.impl;
 
 import com.dounine.blog.bean.User;
+import com.dounine.blog.dao.UserDao;
 import com.dounine.blog.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.IncorrectResultSizeDataAccessException;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Repository
+@Service
 public class UserServiceImpl implements UserService {
 
     @Autowired
-    private final JdbcTemplate jdbcTemplate;
-
-    public UserServiceImpl(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
+    private UserDao userDao;
 
     @Autowired
     public int countUsers() {
-        return jdbcTemplate.queryForObject("select count(*) from user", Integer.class);
+        return userDao.countUsers();
     }
 
     @Override
-    public List<User> listAllUsers(int page, int size) {
-        return jdbcTemplate.query("select * from user limit ?, ?", new BeanPropertyRowMapper(User.class), (page-1)*size, size);
+    public List<User> listByPage(int page, int size) {
+        return userDao.listByPage(page, size);
     }
 
     @Override
     public User findById(int id) {
-        String sql = "select * from user where id = ?";
-        try {
-            User user = (User) jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper(User.class), id);
-            return user;
-        } catch (IncorrectResultSizeDataAccessException e) {
-            System.out.println(e);
-            return null;
-        }
+        User user = userDao.findById(id);
+        user.setPassword("");   // 防止密码泄露
+        return user;
     }
 
     @Override
-    public User findByName(String userName) {
-        String sql = "select * from user where name = ?";
-        try {
-            User user = (User) jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper(User.class), userName);
-            return user;
-        } catch (IncorrectResultSizeDataAccessException e) {
-            System.out.println(e);
-            return null;
-        }
+    public User findByName(String name) {
+        // 由于用户名唯一，所以返回的列表中至多只有一个用户
+        List<User> userList = userDao.findByUsername(name);
+        if (userList.size() == 1) userList.get(0).setPassword("");    // 防止将密码泄露
+        return userList.get(0);
     }
 
     @Override
     public int insert(User user) {
-        String sql = "insert into user(name, phone, password, gender, personalBrief, email, qq, birthday, role) " +
-                "values(?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        return jdbcTemplate.update(sql,
-                user.getName(), user.getPhone(), user.getPassword(), user.getGender(),
-                user.getPersonalBrief(), user.getEmail(), user.getQq(), user.getBirthday(), "normal");
+        /* TODO: 密码加密存储。 */
+        // 由于用户名唯一，所以返回的列表中至多只有一个用户
+        List<User> userList = userDao.findByUsername(user.getUsername());
+
+        // 用户名已存在
+        if (userList != null && userList.size() == 1) {
+            return 0;
+        } else {
+            user.setRole("normal"); // 一般注册的用户都是普通用户
+            if (userDao.insert(user) > 0) return 1;
+            else return -1;
+        }
     }
 
     @Override
-    public int delete(int userId) {
-        String sql = "delete from user where id = ?";
-        return jdbcTemplate.update(sql, userId);
+    public boolean delete(int userId) {
+        int rows = userDao.delete(userId);
+        if (rows > 0) return true;
+        else return false;
     }
 
     @Override
-    public int update(User newUser) {
-        String sql = "update user set name=?, phone=?, password=?, gender=?, " +
-                    "personalBrief=?, email=?, qq=?, birthday=?" +
-                    "where id=?";
-        return jdbcTemplate.update(sql, newUser.getName(), newUser.getPhone(), newUser.getPassword(), newUser.getGender(),
-                newUser.getPersonalBrief(), newUser.getEmail(), newUser.getQq(), newUser.getBirthday(),
-                newUser.getId());
+    public boolean update(User user) {
+        /* TODO: 密码加密存储。 */
+        int rows = userDao.update(user);
+        if (rows > 0) return true;
+        else return false;
+    }
+
+    @Override
+    public int checkUser(String username, String password) {
+        // 由于用户名唯一，所以返回的列表中至多只有一个用户
+        List<User> userList = userDao.findByUsername(username);
+
+        // 用户存在
+        if (userList != null && userList.size() == 1) {
+            /* TODO: password加密后比较。 */
+            if (userList.get(0).getPassword().equals(password)) {
+                return 1;   // 用户名和密码正确
+            } else {
+                return -1;  // 密码错误
+            }
+        } else {
+            return 0;       // 用户不存在
+        }
     }
 }
