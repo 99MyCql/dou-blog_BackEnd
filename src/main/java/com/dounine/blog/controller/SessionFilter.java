@@ -1,9 +1,11 @@
 package com.dounine.blog.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.dounine.blog.util.RetMsgHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
@@ -15,55 +17,65 @@ import java.io.IOException;
 @WebFilter(filterName = "sessionFilter",urlPatterns = {"/api/*"})
 public class SessionFilter implements javax.servlet.Filter {
 
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
     // 管理员才能访问的路径
-    private String[] adminUris = {"/api/user/listAll", "/api/user/delete",
-                                "/api/article/submit", "/api/article/delete",
-                                "/api/comment/update", "/api/comment/delete"};
+    private String[] adminUris = {
+            "/api/user/count", "/api/user/listByPage", "/api/user/findById", "/api/user/findByName", "/api/user/delete",
+            "/api/article/insert", "/api/article/update", "/api/article/delete",
+            "/api/comment/listByPage", "/api/comment/delete"
+    };
 
     // 未登录也可访问的路径
-    private String[] openUris = {"/api/user/login", "/api/user/register"};
+    private String[] openUris = {
+            "/api/user/login", "/api/user/register",
+            "/api/article/count", "/api/article/listByPage", "/api/article/findById", "/api/article/findByTitle",
+            "/api/comment/listByArticleId"
+    };
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) {
-        HttpServletRequest request = (HttpServletRequest) servletRequest;
-        HttpServletResponse response = (HttpServletResponse) servletResponse;
-        HttpSession session = request.getSession();
+        HttpServletRequest request = (HttpServletRequest) servletRequest;       // HTTP 请求
+        HttpServletResponse response = (HttpServletResponse) servletResponse;   // HTTP 响应
+        HttpSession session = request.getSession();                             // session
 
         String uri = request.getRequestURI();
-        System.out.println("filter url: " + uri);
+        logger.info("filter url: " + uri);
 
         JSONObject retMsg = new JSONObject();
 
         // 如果uri不在公开路由中
         if (!isExist(uri, openUris)) {
-            // 如果已经登录过(即留下了session)
+            // 如果已经登录过，即留下了session
             if (session != null && session.getAttribute("username") != null) {
-                System.out.println("该用户已经登录");
-                // 如果不是管理员，却访问管理员路径，则返回状态码3(莫得权限)
+                logger.info("该用户已经登录");
+                // 如果不是管理员，却访问管理员路径，则返回莫得权限
                 if (!((String)session.getAttribute("userRole")).equals("admin") && isExist(uri, adminUris)) {
-                    System.out.println("该用户不是管理员");
-                    retMsg.put("code", 3);
-                    retMsg.put("msg", "you don't have authority");
+                    logger.info("该用户不是管理员");
+                    retMsg.put("code", RetMsgHandler.FAIL_CODE);
+                    retMsg.put("msg", "permission deny");
                     try {
+                        // 直接返回响应，不传递到controller
                         response.getWriter().write(JSONObject.toJSONString(retMsg));
-                        return; // 直接返回响应，不传递到controller
+                        return;
                     }
                     catch (IOException e) {
-                        System.out.println(e);
+                        e.printStackTrace();
                     }
                 }
             }
             // 如果还没登录
             else {
-                System.out.println("该用户未登录");
-                retMsg.put("code", 2);
+                logger.info("该用户未登录");
+                retMsg.put("code", RetMsgHandler.FAIL_CODE);
                 retMsg.put("msg", "you haven't login");
                 try {
+                    // 直接返回响应，不传递到controller
                     response.getWriter().write(JSONObject.toJSONString(retMsg));
-                    return; // 直接返回响应，不传递到controller
+                    return;
                 }
                 catch (IOException e) {
-                    System.out.println(e);
+                    e.printStackTrace();
                 }
             }
         }
@@ -72,11 +84,8 @@ public class SessionFilter implements javax.servlet.Filter {
         try {
             filterChain.doFilter(servletRequest, servletResponse);
         }
-        catch (IOException e) {
-            System.out.println(e);
-        }
-        catch (ServletException e) {
-            System.out.println(e);
+        catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

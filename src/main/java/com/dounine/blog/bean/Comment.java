@@ -10,7 +10,7 @@ public class Comment {
 
     private String content;     // 评论内容
 
-    private int likes=0;        // 点赞数
+    private int likes;          // 点赞数
 
     private String publishDate; // 发布日期
 

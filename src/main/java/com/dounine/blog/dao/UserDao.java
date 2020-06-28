@@ -2,6 +2,7 @@ package com.dounine.blog.dao;
 
 import com.dounine.blog.bean.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -31,13 +32,24 @@ public class UserDao {
     }
 
     public User findById(int id) {
-        return (User) jdbcTemplate.queryForObject("select * from user where id = ?",
-                new BeanPropertyRowMapper(User.class), id);
+        try {
+            return (User) jdbcTemplate.queryForObject("select * from user where id = ?",
+                    new BeanPropertyRowMapper(User.class), id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
-    public List<User> findByUsername(String username) {
-        return jdbcTemplate.query("select * from user where username = ?",
-                new BeanPropertyRowMapper(User.class), username);
+    public User findByUsername(String username) {
+        try {
+            // 用户名上建立了唯一索引
+            return (User) jdbcTemplate.queryForObject("select * from user where username = ?",
+                    new BeanPropertyRowMapper(User.class), username);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public int insert(User user) {
@@ -54,7 +66,7 @@ public class UserDao {
 
     public int update(User user) {
         String sql = "update user set username=?, password=?, sex=?, phone=?, " +
-                "email=?, qq=?, profile=?, birthday=?, role=?" +
+                "email=?, qq=?, profile=?, birthday=?, role=? " +
                 "where id=?";
         return jdbcTemplate.update(sql,
                 user.getUsername(), user.getPassword(), user.getSex(), user.getPhone(),

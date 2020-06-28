@@ -1,88 +1,89 @@
 package com.dounine.blog.service.impl;
 
 import com.dounine.blog.bean.Article;
+import com.dounine.blog.dao.ArticleDao;
 import com.dounine.blog.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
-@Repository
+@Service
 public class ArticleServiceImpl implements ArticleService {
-    private final JdbcTemplate jdbcTemplate;
+    @Autowired
+    private ArticleDao articleDao;
 
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //设置日期格式
 
     @Autowired
     public int countArticles() {
-        return jdbcTemplate.queryForObject("select count(*) from article", Integer.class);
-    }
-
-    @Autowired
-    public ArticleServiceImpl(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+        return articleDao.countArticles();
     }
 
     @Override
-    public List<Article> listAllArticles(int page, int size) {
-        return jdbcTemplate.query("select * from article limit ?, ?", new BeanPropertyRowMapper(Article.class), (page-1)*size, size);
+    public List<Article> listByPage(int page, int size) {
+        return articleDao.listByPage(page, size);
     }
 
     @Override
     public Article findById(int id) {
-        String sql = "select * from article where id = ?";
-        try {
-            return (Article) jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper(Article.class), id);
-        } catch (IncorrectResultSizeDataAccessException e) {
-            System.out.println(e);
-            return null;
-        }
+        return articleDao.findById(id);
     }
 
     @Override
-    public Article findByArticleTitle(String articleTitle) {
-        String sql = "select * from article where articleTitle = ?";
-        try {
-            return (Article) jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper(Article.class), articleTitle);
-        } catch (IncorrectResultSizeDataAccessException e) {
-            System.out.println(e);
-            return null;
+    public Article findByTitle(String title, boolean addReadings) {
+        /* TODO: 阅读量增加更加细致。 */
+        Article article = articleDao.findByTitle(title);
+        // 如果 addReadings 为 true，文章阅读量加一
+        if (addReadings) {
+            article.setReadings(article.getReadings()+1);
+            articleDao.update(article);
         }
+        return article;
     }
 
     @Override
     public int insert(Article article) {
-        String sql = "insert into article(authorId," +
-                "articleTitle, articleContent, articleTags," +
-                "articleCategories,publishDate, updateDate, " +
-                "articleTabloid, likes, readers, comments) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        return jdbcTemplate.update(sql,
-                article.getAuthorId(),
-                article.getArticleTitle(),article.getArticleContent(), article.getArticleTags(),
-                article.getArticleCategories(),article.getPublishDate(), article.getUpdateDate(),
-                article.getArticleTabloid(), article.getLikes(), article.getReaders(), article.getComments());
+        // 文章标题已存在
+        if (articleDao.findByTitle(article.getTitle()) != null) {
+            return 0;
+        } else {
+            // 设置文章发布时间。new Date()为获取当前系统时间
+            article.setPublishDate(dateFormat.format(new Date()));
+            if (articleDao.insert(article) > 0)
+                return 1;
+            else
+                return -1;
+        }
+
     }
 
     @Override
-    public int delete(int id) {
-        String sql = "delete from article where id = ?";
-        return jdbcTemplate.update(sql, id);
+    public boolean delete(int id) {
+        if (articleDao.delete(id) > 0)
+            return true;
+        else
+            return false;
     }
 
     @Override
-    public int update(Article newArticle) {
-        String sql = "update article set authorId = ?, " +
-                "articleTitle = ?, articleContent = ?, articleTags = ?, " +
-                "articleCategories = ?, publishDate = ?, updateDate = ?, " +
-                "articleTabloid = ?, likes = ?, readers = ?, comments = ? " +
-                "where id = ?";
-        return jdbcTemplate.update(sql,
-                newArticle.getAuthorId(), newArticle.getArticleTitle(),
-                newArticle.getArticleContent(), newArticle.getArticleTags(), newArticle.getArticleCategories(),
-                newArticle.getPublishDate(), newArticle.getUpdateDate(), newArticle.getArticleTabloid(),
-                newArticle.getLikes(), newArticle.getReaders(), newArticle.getComments(),
-                newArticle.getId());
+    public int update(Article article) {
+        // 文章标题已存在
+        if (articleDao.findByTitle(article.getTitle()) != null) {
+            return 0;
+        } else {
+            // 设置文章更新时间。new Date()为获取当前系统时间
+            article.setUpdateDate(dateFormat.format(new Date()));
+            if (articleDao.update(article) > 0)
+                return 1;
+            else
+                return -1;
+        }
     }
 }

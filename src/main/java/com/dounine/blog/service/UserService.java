@@ -23,7 +23,12 @@ public interface UserService {
 
     public boolean delete(int userId);
 
-    public boolean update(User user);
+    /**
+     * 更新用户
+     * @param user
+     * @return 0 表示用户名已存在；1 表示插入成功；-1 表示插入失败。
+     */
+    public int update(User user);
 
     /**
      * 检查用户名和密码是否正确

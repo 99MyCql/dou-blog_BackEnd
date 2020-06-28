@@ -27,15 +27,28 @@ public class UserController {
                 JSONObject.toJSONString(count));
     }
 
-    @RequestMapping(value = "/listAll", method = RequestMethod.GET)
-    public JSONObject listAll(@RequestParam(defaultValue = "1") int page,
+    @RequestMapping(value = "/listByPage", method = RequestMethod.GET)
+    public JSONObject listByPage(@RequestParam(defaultValue = "1") int page,
                               @RequestParam(defaultValue = "10") int size) {
+        if (page <= 0)
+            return RetMsgHandler.getRetMsg(RetMsgHandler.FAIL_CODE, "page is error");
         List<User> userList = userService.listByPage(page, size);   // 分页查询用户
 
         return RetMsgHandler.getRetMsg(
                 RetMsgHandler.SUCCESS_CODE,
                 "list users successfully",
                 JSONObject.toJSONString(userList));
+    }
+
+    @RequestMapping(value = "/getInfo", method = RequestMethod.GET)
+    public JSONObject getInfo(HttpServletRequest request) {
+        // 从 session 中获取当前用户的 ID
+        HttpSession session = request.getSession();
+        int userId = (int)session.getAttribute("userId");
+
+        return RetMsgHandler.getRetMsg(RetMsgHandler.SUCCESS_CODE,
+                "get info successfully",
+                JSONObject.toJSONString(userService.findById(userId)));
     }
 
     @RequestMapping(value = "/findById", method = RequestMethod.GET)
@@ -80,21 +93,34 @@ public class UserController {
         return retMsg;
     }
 
-    @RequestMapping(value = "/update", method = RequestMethod.POST)
-    public JSONObject update(@RequestBody User user) {
-        JSONObject retMsg; // 返回信息
+    @RequestMapping(value = "/updateInfo", method = RequestMethod.POST)
+    public JSONObject updateInfo(@RequestBody User user, HttpServletRequest request) {
+        JSONObject retMsg = null;
 
-        // 更新用户成功
-        if (userService.update(user))
-            retMsg = RetMsgHandler.getRetMsg(RetMsgHandler.SUCCESS_CODE, "update this user successfully");
-        else
-            retMsg = RetMsgHandler.getRetMsg(RetMsgHandler.ERROR_CODE, "update this user error");
+        // 检测 user ID 是否有问题，只允许是当前用户 ID
+        HttpSession session = request.getSession();
+        if (user.getId() != (int)session.getAttribute("userId"))
+            return RetMsgHandler.getRetMsg(RetMsgHandler.FAIL_CODE, "the user ID is incorrect");
+
+        switch (userService.update(user)) {
+            case 0:
+                retMsg = RetMsgHandler.getRetMsg(RetMsgHandler.FAIL_CODE, "this username is exist");
+                break;
+            case 1:
+                retMsg = RetMsgHandler.getRetMsg(RetMsgHandler.SUCCESS_CODE, "update successfully");
+                break;
+            case -1:
+                retMsg = RetMsgHandler.getRetMsg(RetMsgHandler.ERROR_CODE, "update error");
+                break;
+        }
+
         return retMsg;
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public JSONObject login(@RequestParam String name, @RequestParam String password,
                             HttpServletRequest request) {
+        /* TODO: 邮箱验证 */
         JSONObject retMsg = null; // 返回信息
 
         switch (userService.checkUser(name, password)) {
@@ -104,6 +130,11 @@ public class UserController {
                 break;
             // 正确
             case 1:
+                User user = userService.findByName(name);
+                HttpSession session = request.getSession(); // 获取session
+                session.setAttribute("username", name);
+                session.setAttribute("userId", user.getId());
+                session.setAttribute("userRole", user.getRole());
                 retMsg = RetMsgHandler.getRetMsg(RetMsgHandler.SUCCESS_CODE, "login successfully");
                 break;
             // 密码错误

@@ -1,83 +1,89 @@
 package com.dounine.blog.service.impl;
 
+import com.dounine.blog.bean.Article;
 import com.dounine.blog.bean.Comment;
+import com.dounine.blog.dao.ArticleDao;
+import com.dounine.blog.dao.CommentDao;
+import com.dounine.blog.service.ArticleService;
 import com.dounine.blog.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.IncorrectResultSizeDataAccessException;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
-@Repository
+@Service
 public class CommentServiceImpl implements CommentService {
+
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //设置日期格
+
     @Autowired
-    private final JdbcTemplate jdbcTemplate;
+    private CommentDao commentDao;
 
-    public CommentServiceImpl(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
-
+    @Autowired
+    private ArticleDao articleDao;
 
     @Autowired
     public int countComments() {
-        return jdbcTemplate.queryForObject("select count(*) from comment", Integer.class);
+        return commentDao.countComments();
     }
 
     @Override
-    public List<Comment> listAllComments(int page, int size) {
-        return jdbcTemplate.query("select * from comment limit ?, ?", new BeanPropertyRowMapper(Comment.class), (page-1)*size, size);
+    public List<Map<String,Object>> listExtendByPage(int page, int size) {
+        return commentDao.listExtendByPage(page, size);
     }
 
     @Override
-    public List<Comment> listByArticleId(int articleId, int page, int size) {
-        return jdbcTemplate.query("select * from comment where articleId = ? limit ?, ?", new BeanPropertyRowMapper(Comment.class), articleId, (page-1)*size, size);
+    public List<Map<String,Object>> listExtendByArticleId(int articleId) {
+        return commentDao.listExtendByArticleId(articleId);
     }
 
     @Override
-    public List<Comment> listByArticleId(int articleId) {
-        return jdbcTemplate.query("select * from comment where articleId = ?", new BeanPropertyRowMapper(Comment.class), articleId);
+    public List<Map<String,Object>> listExtendByArticleId(int articleId, int page, int size) {
+        return commentDao.listExtendByArticleId(articleId, page, size);
     }
 
     @Override
-    public List<Comment> listByCommenterId(int commenterId) {
-        return jdbcTemplate.query("select * from comment where commenterId = ?", new BeanPropertyRowMapper(Comment.class), commenterId);
+    public List<Map<String,Object>> listExtendByCommenterId(int commenterId) {
+        return commentDao.listExtendByCommenterId(commenterId);
     }
 
     @Override
     public Comment findById(int id) {
-        String sql = "select * from comment where id = ?";
-        try {
-            return (Comment) jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper(Comment.class), id);
-        } catch (IncorrectResultSizeDataAccessException e) {
-            System.out.println(e);
-            return null;
+        return commentDao.findById(id);
+    }
+
+    @Override
+    public boolean insert(Comment comment) {
+        comment.setPublishDate(dateFormat.format(new Date()));  // 设置发布时间
+        if (commentDao.insert(comment) > 0) {
+            Article article = articleDao.findById(comment.getArticleId());  // 找到该评论对应的文章
+            article.setComments(article.getComments()+1);                   // 文章评论数加一
+            // 更新文章
+            if (articleDao.update(article) > 0)
+                return true;
+            else
+                return false;
         }
+        else
+            return false;
     }
 
     @Override
-    public int insert(Comment comment) {
-        String sql = "insert into comment(parentId, articleId, commenterId, commentDate, commentContent, likes) " +
-                "values(?, ?, ?, ?, ?, ?)";
-        return jdbcTemplate.update(sql,
-                comment.getParentId(), comment.getArticleId(), comment.getCommenterId(),
-                comment.getCommentDate(), comment.getCommentContent(), comment.getLikes());
-    }
-
-    @Override
-    public int delete(int id) {
-        String sql = "delete from comment where id = ?";
-        return jdbcTemplate.update(sql, id);
-    }
-
-    @Override
-    public int update(Comment newComment) {
-        String sql = "update comment set (parentId, articleId, commenterId, commentDate, commentContent, likes) " +
-                "values(?, ?, ?, ?, ?, ?) where id = ?";
-        return jdbcTemplate.update(sql,
-                newComment.getParentId(), newComment.getArticleId(), newComment.getCommenterId(),
-                newComment.getCommentDate(), newComment.getCommentContent(), newComment.getLikes(),
-                newComment.getId());
+    public boolean delete(int id) {
+        Comment comment = commentDao.findById(id);
+        if (comment != null && commentDao.delete(id) > 0) {
+            Article article = articleDao.findById(comment.getArticleId());  // 找到该评论对应的文章
+            article.setComments(article.getComments()-1);                   // 文章评论数加一
+            // 更新文章
+            if (articleDao.update(article) > 0)
+                return true;
+            else
+                return false;
+        }
+        else
+            return false;
     }
 }

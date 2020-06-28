@@ -2,13 +2,13 @@ package com.dounine.blog.bean;
 
 public class User {
 
-    private int id;         // 主键
+    private int id;             // 主键
 
-    private String username;
+    private String username;    // 用户名，唯一索引
 
-    private String password;
+    private String password;    // 密码
 
-    private int sex;        // 0 女，1 男
+    private int sex;            // 性别：0 女，1 男
 
     private String phone;
 
@@ -16,11 +16,11 @@ public class User {
 
     private String qq;
 
-    private String profile;
+    private String profile;     // 个人简介
 
     private String birthday;
 
-    private String role;
+    private String role;        // 用户身份：admin normal
 
     public void setId(int id) {
         this.id = id;
