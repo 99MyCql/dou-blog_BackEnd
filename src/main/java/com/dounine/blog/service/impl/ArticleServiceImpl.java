@@ -4,10 +4,6 @@ import com.dounine.blog.bean.Article;
 import com.dounine.blog.dao.ArticleDao;
 import com.dounine.blog.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.IncorrectResultSizeDataAccessException;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
@@ -75,7 +71,8 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public int update(Article article) {
         // 文章标题已存在
-        if (articleDao.findByTitle(article.getTitle()) != null) {
+        if (!articleDao.findById(article.getId()).getTitle().equals(article.getTitle())
+                && articleDao.findByTitle(article.getTitle()) != null) {
             return 0;
         } else {
             // 设置文章更新时间。new Date()为获取当前系统时间

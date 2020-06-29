@@ -19,6 +19,7 @@ public class RetMsgHandler {
     public static final int SUCCESS_CODE = 0;   // 成功
     public static final int ERROR_CODE = 1;     // 出现错误
     public static final int FAIL_CODE = 2;      // 失败
+    public static final int NOT_LOG_CODE = 3; // 未登录
 
     /***
      * 组合成map类型的返回信息
