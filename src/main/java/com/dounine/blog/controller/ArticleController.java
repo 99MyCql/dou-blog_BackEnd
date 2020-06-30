@@ -54,16 +54,16 @@ public class ArticleController {
     }
 
     @RequestMapping(value = "/findByTitle", method = RequestMethod.GET)
-    public JSONObject findByTitle(@RequestParam String articleTitle, HttpServletRequest request) {
+    public JSONObject findByTitle(@RequestParam String title, HttpServletRequest request) {
         JSONObject retMsg; // 返回信息
         Article article = null;
         HttpSession session = request.getSession();
 
         // 如果查看人是管理员，则不增加文章阅读量
         if (session.getAttribute("userRole") != null && session.getAttribute("userRole").equals("admin"))
-            article = articleService.findByTitle(articleTitle, false);
+            article = articleService.findByTitle(title, false);
         else
-            article = articleService.findByTitle(articleTitle, true);
+            article = articleService.findByTitle(title, true);
 
         // 如果没有这篇文章
         if (article == null)
@@ -94,8 +94,12 @@ public class ArticleController {
     }
 
     @RequestMapping(value = "/insert", method = RequestMethod.POST)
-    public JSONObject insert(@RequestBody Article article) {
+    public JSONObject insert(@RequestBody Article article, HttpServletRequest request) {
         JSONObject retMsg = null;
+
+        // 设置作者 ID
+        HttpSession session = request.getSession();
+        article.setAuthorId((int)session.getAttribute("userId"));
 
         switch (articleService.insert(article)) {
             case 0:

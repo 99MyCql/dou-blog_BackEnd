@@ -14,7 +14,7 @@ import java.util.List;
  * @class UserDao
  * @author douNine
  * @date 2020/6/26 15:48
- * @description TODO
+ * @description UserDao
  */
 @Repository
 public class UserDao {
@@ -23,17 +23,17 @@ public class UserDao {
     private JdbcTemplate jdbcTemplate;
 
     public int countUsers() {
-        return jdbcTemplate.queryForObject("select count(*) from user", Integer.class);
+        return jdbcTemplate.queryForObject("select count(*) from \"USER\"", Integer.class);
     }
 
     public List<User> listByPage(int page, int size) {
-        return jdbcTemplate.query("select * from user limit ?, ?",
-                new BeanPropertyRowMapper(User.class), (page-1)*size, size);
+        return jdbcTemplate.query("select * from \"USER\" where rownum>? and rownum<=?",
+                new BeanPropertyRowMapper(User.class), (page-1)*size, page*size);
     }
 
     public User findById(int id) {
         try {
-            return (User) jdbcTemplate.queryForObject("select * from user where id = ?",
+            return (User) jdbcTemplate.queryForObject("select * from \"USER\" where id = ?",
                     new BeanPropertyRowMapper(User.class), id);
         } catch (Exception e) {
             e.printStackTrace();
@@ -44,7 +44,7 @@ public class UserDao {
     public User findByUsername(String username) {
         try {
             // 用户名上建立了唯一索引
-            return (User) jdbcTemplate.queryForObject("select * from user where username = ?",
+            return (User) jdbcTemplate.queryForObject("select * from \"USER\" where username = ?",
                     new BeanPropertyRowMapper(User.class), username);
         } catch (Exception e) {
             e.printStackTrace();
@@ -53,7 +53,7 @@ public class UserDao {
     }
 
     public int insert(User user) {
-        String sql = "insert into user(username, password, sex, phone, email, qq, profile, birthday, role) " +
+        String sql = "insert into \"USER\"(username, password, sex, phone, email, qq, profile, birthday, role) " +
                 "values(?, ?, ?, ?, ?, ?, ?, ?, ?)";
         return jdbcTemplate.update(sql,
                 user.getUsername(), user.getPassword(), user.getSex(), user.getPhone(),
@@ -61,16 +61,16 @@ public class UserDao {
     }
 
     public int delete(int userId) {
-        return jdbcTemplate.update("delete from user where id = ?", userId);
+        return jdbcTemplate.update("delete from \"USER\" where id = ?", userId);
     }
 
     public int update(User user) {
-        String sql = "update user set username=?, password=?, sex=?, phone=?, " +
-                "email=?, qq=?, profile=?, birthday=?, role=? " +
+        String sql = "update \"USER\" set username=?, sex=?, phone=?, " +
+                "email=?, qq=?, profile=?, birthday=? " +
                 "where id=?";
         return jdbcTemplate.update(sql,
-                user.getUsername(), user.getPassword(), user.getSex(), user.getPhone(),
-                user.getEmail(), user.getQq(), user.getProfile(), user.getBirthday(), user.getRole(),
+                user.getUsername(), user.getSex(), user.getPhone(),
+                user.getEmail(), user.getQq(), user.getProfile(), user.getBirthday(),
                 user.getId());
     }
 }

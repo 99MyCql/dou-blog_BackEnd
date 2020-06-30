@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.rmi.server.ExportException;
 import java.util.List;
 import java.util.Map;
 
@@ -15,7 +16,7 @@ import java.util.Map;
  * @class CommentDao
  * @author douNine
  * @date 2020/6/27 13:27
- * @description TODO
+ * @description CommentDao
  */
 @Repository
 public class CommentDao {
@@ -24,43 +25,40 @@ public class CommentDao {
     private JdbcTemplate jdbcTemplate;
 
     public int countComments() {
-        return jdbcTemplate.queryForObject("select count(*) from comment", Integer.class);
+        return jdbcTemplate.queryForObject("select count(*) from \"COMMENT\"", Integer.class);
     }
 
     public List<Map<String,Object>> listExtendByPage(int page, int size) {
         String sql = "select c.id, u.username, a.title, c.content, c.likes, c.publishDate " +
-                "from comment c join user u join article a " +
-                "on c.commenterId=u.id and c.articleId=a.id limit ?, ?";
-        return jdbcTemplate.queryForList(sql, (page-1)*size, size);
+                "from \"COMMENT\" c, \"USER\" u, article a " +
+                "where c.commenterId=u.id and c.articleId=a.id and rownum>? and rownum<=?";
+        return jdbcTemplate.queryForList(sql, (page-1)*size, page*size);
     }
 
     public List<Map<String,Object>> listExtendByArticleId(int articleId, int page, int size) {
         String sql = "select c.id, u.username, a.title, c.content, c.likes, c.publishDate " +
-                "from comment c join user u join article a " +
-                "on c.commenterId=u.id and c.articleId=a.id " +
-                "where c.articleId=? limit ?, ?";
-        return jdbcTemplate.queryForList(sql, articleId, (page-1)*size, size);
+                "from \"COMMENT\" c, \"USER\" u, article a " +
+                "where c.commenterId=u.id and c.articleId=a.id and c.articleId=? and rownum>? and rownum<=?";
+        return jdbcTemplate.queryForList(sql, articleId, (page-1)*size, page*size);
     }
 
     public List<Map<String,Object>> listExtendByArticleId(int articleId) {
         String sql = "select c.id, u.username, a.title, c.content, c.likes, c.publishDate " +
-                "from comment c join user u join article a " +
-                "on c.commenterId=u.id and c.articleId=a.id " +
-                "where c.articleId=?";
+                "from \"COMMENT\" c, \"USER\" u, article a " +
+                "where c.commenterId=u.id and c.articleId=a.id and c.articleId=?";
         return jdbcTemplate.queryForList(sql, articleId);
     }
 
     public List<Map<String,Object>> listExtendByCommenterId(int commenterId) {
         String sql = "select c.id, u.username, a.title, c.content, c.likes, c.publishDate " +
-                "from comment c join user u join article a " +
-                "on c.commenterId=u.id and c.articleId=a.id " +
-                "where c.commenterId=?";
+                "from \"COMMENT\" c, \"USER\" u, article a " +
+                "where c.commenterId=u.id and c.articleId=a.id and c.commenterId=?";
         return jdbcTemplate.queryForList(sql, commenterId);
     }
 
     public Comment findById(int id) {
         try {
-            return (Comment) jdbcTemplate.queryForObject("select * from comment where id = ?",
+            return (Comment) jdbcTemplate.queryForObject("select * from \"COMMENT\" where id = ?",
                     new BeanPropertyRowMapper(Comment.class), id);
         } catch (Exception e) {
             e.printStackTrace();
@@ -69,23 +67,33 @@ public class CommentDao {
     }
 
     public int insert(Comment comment) {
-        String sql = "insert into comment(articleId, commenterId, content, likes, publishDate) " +
+        String sql = "insert into \"COMMENT\"(articleId, commenterId, content, likes, publishDate) " +
                 "values (?, ?, ?, ?, ?)";
-        return jdbcTemplate.update(sql,
-                comment.getArticleId(), comment.getCommenterId(), comment.getContent(),
-                comment.getLikes(), comment.getPublishDate());
+        try {
+            return jdbcTemplate.update(sql,
+                    comment.getArticleId(), comment.getCommenterId(), comment.getContent(),
+                    comment.getLikes(), comment.getPublishDate());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
     }
 
     public int delete(int id) {
-        return jdbcTemplate.update("delete from comment where id = ?", id);
+        return jdbcTemplate.update("delete from \"COMMENT\" where id = ?", id);
     }
 
     public int update(Comment comment) {
-        String sql = "update comment set articleId=?, commenterId=?, content=?, likes=?, publishDate=? " +
+        String sql = "update \"COMMENT\" set articleId=?, commenterId=?, content=?, likes=?, publishDate=? " +
                 "where id = ?";
-        return jdbcTemplate.update(sql,
-                comment.getArticleId(), comment.getCommenterId(), comment.getContent(),
-                comment.getLikes(), comment.getPublishDate(),
-                comment.getId());
+        try {
+            return jdbcTemplate.update(sql,
+                    comment.getArticleId(), comment.getCommenterId(), comment.getContent(),
+                    comment.getLikes(), comment.getPublishDate(),
+                    comment.getId());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
     }
 }

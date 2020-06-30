@@ -18,7 +18,7 @@ import static org.junit.Assert.*;
  * @class CommentServiceImplTest
  * @author douNine
  * @date 2020/6/28 8:49
- * @description TODO
+ * @description CommentServiceImpl 类测试
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest

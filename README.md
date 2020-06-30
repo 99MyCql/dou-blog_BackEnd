@@ -9,9 +9,9 @@
 ## Requirement Analysis
 
 - [ ] 用户
-    - [ ] 登录
+    - [x] 登录
         - [x] 登录成功后，在一段时间内，用户无须重复登录
-        - [ ] 退出登录后，下次需重新登录
+        - [x] 退出登录后，下次需重新登录
     - [ ] 注册
         - [x] 创建用户名、密码
         - [ ] 密码加密传输并保存
@@ -19,14 +19,15 @@
     - [x] 用户修改自己信息
     - [x] 管理员可以删除用户
     - [x] 分类：管理员与普通用户
-- [ ] 文章
+- [x] 文章
     - [x] 管理员才能发布文章
     - [x] 管理员可以删除文章
     - [x] 管理员才能更新文章
-    - [ ] 不论用户是否登录，都可以浏览文章
-- [x] 评论
+    - [x] 不论用户是否登录，都可以浏览文章
+- [ ] 评论
     - [x] 用户登录后，可以评论文章
     - [x] 管理员可以删除评论
+    - [ ] 文章下的评论懒加载
 - [ ] 分类
     - [ ] 管理员可以添加分类
     - [ ] 分类具有树级关系
@@ -42,14 +43,14 @@
 在`src/main/resources`目录下，新建配置文件`application.properties`。内容大致如下：
 
 ```config
-# Mysql
-spring.datasource.url = jdbc:mysql://数据库地址(localhost):3306/数据库名?characterEncoding=UTF-8&serverTimezone=UTC
-spring.datasource.username = 用户名
-spring.datasource.password = 密码
-spring.datasource.driver-class-username = com.mysql.jdbc.Driver
+# Oracle
+spring.datasource.druid.second.driver-class-name = oracle.jdbc.OracleDriver
+spring.datasource.url = jdbc:oracle:thin:@<数据库地址>:1521:<SID，默认：orcl>
+spring.datasource.username = <用户名>
+spring.datasource.password = <密码>
 
 # Swagger
-swagger.title = Swagger页面标题
+swagger.title = <Swagger页面标题>
 
 # Http
 spring.http.encoding.charset = UTF-8
