@@ -63,11 +63,21 @@ public class SessionFilter implements javax.servlet.Filter {
                         e.printStackTrace();
                     }
                 }
+                // 如果访问退出登录api，则传递到controller
+                else if (uri.equals("/api/user/logout")) {
+                    logger.info("用户准备退出登录");
+                    try {
+                        filterChain.doFilter(servletRequest, servletResponse);
+                    }
+                    catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
             }
             // 如果还没登录
             else {
                 logger.info("该用户未登录");
-                retMsg.put("code", RetMsgHandler.FAIL_CODE);
+                retMsg.put("code", RetMsgHandler.NOT_LOG_CODE);
                 retMsg.put("msg", "you haven't login");
                 try {
                     // 直接返回响应，不传递到controller

@@ -95,6 +95,7 @@ public class UserController {
 
     @RequestMapping(value = "/updateInfo", method = RequestMethod.POST)
     public JSONObject updateInfo(@RequestBody User user, HttpServletRequest request) {
+        /* TODO: 更新密码 */
         JSONObject retMsg = null;
 
         // 检测 user ID 是否有问题，只允许是当前用户 ID

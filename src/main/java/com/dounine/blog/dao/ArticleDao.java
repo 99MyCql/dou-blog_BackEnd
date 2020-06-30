@@ -2,7 +2,6 @@ package com.dounine.blog.dao;
 
 import com.dounine.blog.bean.Article;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -14,7 +13,7 @@ import java.util.List;
  * @class ArticleDao
  * @author douNine
  * @date 2020/6/26 20:58
- * @description TODO
+ * @description ArticleDao
  */
 @Repository
 public class ArticleDao {
@@ -52,10 +51,10 @@ public class ArticleDao {
     }
 
     public int insert(Article article) {
-        String sql = "insert into article(authorId, title, abstract, content, categories, tags, readings, " +
+        String sql = "insert into article(authorId, title, summary, content, categories, tags, readings, " +
                 "comments, likes, publishDate, updateDate) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         return jdbcTemplate.update(sql,
-                article.getAuthorId(), article.getTitle(), article.getArticleAbstract(), article.getContent(),
+                article.getAuthorId(), article.getTitle(), article.getSummary(), article.getContent(),
                 article.getCategories(), article.getTags(), article.getReadings(), article.getComments(),
                 article.getLikes(), article.getPublishDate(), article.getUpdateDate());
     }
@@ -65,11 +64,11 @@ public class ArticleDao {
     }
 
     public int update(Article article) {
-        String sql = "update article set authorId=?, title=?, abstract=?, content=?, categories=?, tags=?, " +
+        String sql = "update article set authorId=?, title=?, summary=?, content=?, categories=?, tags=?, " +
                 "readings=?, comments=?, likes=?, publishDate=?, updateDate=? " +
                 "where id = ?";
         return jdbcTemplate.update(sql,
-                article.getAuthorId(), article.getTitle(), article.getArticleAbstract(), article.getContent(),
+                article.getAuthorId(), article.getTitle(), article.getSummary(), article.getContent(),
                 article.getCategories(), article.getTags(), article.getReadings(), article.getComments(),
                 article.getLikes(), article.getPublishDate(), article.getUpdateDate(),
                 article.getId());

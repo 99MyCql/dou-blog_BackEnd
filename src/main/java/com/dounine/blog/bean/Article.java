@@ -8,7 +8,7 @@ public class Article {
 
     private String title;           // 文章标题
 
-    private String articleAbstract; // 文章摘要
+    private String summary;         // 文章摘要
 
     private String content;         // 文章内容
 
@@ -50,12 +50,12 @@ public class Article {
         return title;
     }
 
-    public void setArticleAbstract(String articleAbstract) {
-        this.articleAbstract = articleAbstract;
+    public void setSummary(String summary) {
+        this.summary = summary;
     }
 
-    public String getArticleAbstract() {
-        return articleAbstract;
+    public String getSummary() {
+        return summary;
     }
 
     public void setContent(String content) {
