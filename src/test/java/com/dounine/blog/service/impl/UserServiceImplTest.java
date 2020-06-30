@@ -19,7 +19,7 @@ import static org.junit.Assert.*;
  * @class UserServiceImplTest
  * @author douNine
  * @date 2020/6/27 21:33
- * @description TODO
+ * @description UserServiceImpl 类测试
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest

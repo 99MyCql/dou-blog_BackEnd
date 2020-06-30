@@ -16,7 +16,7 @@ import static org.junit.Assert.*;
  * @class UserDaoTest
  * @author douNine
  * @date 2020/6/27 12:20
- * @description TODO
+ * @description UserDao 类测试
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest

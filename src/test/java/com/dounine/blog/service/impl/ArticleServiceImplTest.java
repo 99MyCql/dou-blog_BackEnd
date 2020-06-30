@@ -13,7 +13,7 @@ import static org.junit.Assert.*;
  * @class ArticleServiceImplTest
  * @author douNine
  * @date 2020/6/28 8:26
- * @description TODO
+ * @description ArticleServiceImpl 类测试
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
