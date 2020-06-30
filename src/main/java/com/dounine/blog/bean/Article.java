@@ -8,7 +8,7 @@ public class Article {
 
     private String title;           // 文章标题
 
-    private String summary; // 文章摘要
+    private String summary;         // 文章摘要
 
     private String content;         // 文章内容
 

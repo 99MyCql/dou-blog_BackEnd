@@ -43,11 +43,11 @@
 在`src/main/resources`目录下，新建配置文件`application.properties`。内容大致如下：
 
 ```config
-# Oracle
-spring.datasource.druid.second.driver-class-name = oracle.jdbc.OracleDriver
-spring.datasource.url = jdbc:oracle:thin:@<数据库地址>:1521:<SID，默认：orcl>
+# Mysql
+spring.datasource.url = jdbc:mysql://<数据库地址>:3306/<数据库名>?characterEncoding=UTF-8&serverTimezone=UTC
 spring.datasource.username = <用户名>
 spring.datasource.password = <密码>
+spring.datasource.driver-class-username = com.mysql.jdbc.Driver
 
 # Swagger
 swagger.title = <Swagger页面标题>

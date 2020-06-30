@@ -25,8 +25,8 @@ public class ArticleDao {
     }
 
     public List<Article> listByPage(int page, int size) {
-        return jdbcTemplate.query("select * from article where rownum>? and rownum<=?",
-                new BeanPropertyRowMapper(Article.class), (page-1)*size, page*size);
+        return jdbcTemplate.query("select * from article limit ?, ?",
+                new BeanPropertyRowMapper(Article.class), (page-1)*size, size);
     }
 
     public Article findById(int id) {
